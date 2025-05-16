@@ -72,7 +72,6 @@ public class InitialUserSurveyService {
         existingSurvey.setFavoriteColor(surveyDto.favoriteColor());
         existingSurvey.setHobby(surveyDto.hobby());
         existingSurvey.setAgeRange(surveyDto.ageRange());
-        existingSurvey.setSubstanceUse(surveyDto.substanceUse());
         existingSurvey.setClosePersonPresence(surveyDto.closePersonPresence());
         existingSurvey.setFamilyRelationshipQuality(surveyDto.familyRelationshipQuality());
         existingSurvey.setCloseRelationshipsQuality(surveyDto.closeRelationshipsQuality());

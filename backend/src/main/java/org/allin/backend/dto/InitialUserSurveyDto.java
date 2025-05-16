@@ -9,7 +9,6 @@ public record InitialUserSurveyDto(
         FavoriteColor favoriteColor,
         Hobby hobby,
         AgeRange ageRange,
-        SubstanceUse substanceUse,
         ClosePersonPresence closePersonPresence,
         FamilyRelationshipQuality familyRelationshipQuality,
         CloseRelationshipsQuality closeRelationshipsQuality

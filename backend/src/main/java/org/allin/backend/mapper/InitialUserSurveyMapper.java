@@ -18,7 +18,6 @@ public class InitialUserSurveyMapper {
         survey.setFavoriteColor(dto.favoriteColor());
         survey.setHobby(dto.hobby());
         survey.setAgeRange(dto.ageRange());
-        survey.setSubstanceUse(dto.substanceUse());
         survey.setClosePersonPresence(dto.closePersonPresence());
         survey.setFamilyRelationshipQuality(dto.familyRelationshipQuality());
         survey.setCloseRelationshipsQuality(dto.closeRelationshipsQuality());
