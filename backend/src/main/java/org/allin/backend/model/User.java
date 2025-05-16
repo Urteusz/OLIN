@@ -28,9 +28,6 @@ public class User {
     @Column(length = 50)
     private String firstName;
 
-    @Column(length = 50)
-    private String lastName;
-
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 

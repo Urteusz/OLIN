@@ -17,7 +17,6 @@ public class UserMapper {
         user.setUsername(dto.username());
         user.setPassword(dto.password());
         user.setFirstName(dto.firstName());
-        user.setLastName(dto.lastName());
         user.setEmail(dto.email());
 
         // Ustawienie wartości domyślnych lub początkowych dla nowych użytkowników

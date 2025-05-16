@@ -64,7 +64,6 @@ public class DataInitializer {
                 usernameBase,
                 "password123", // Hasło powinno być hashowane w serwisie
                 firstName,
-                lastName,
                 usernameBase + "@example.com",
                 "pl"
         );
@@ -83,7 +82,6 @@ public class DataInitializer {
                 FavoriteColor.BLUE,
                 Hobby.SPORTS,
                 AgeRange.AGE_25_34,
-                SubstanceUse.RARELY,
                 ClosePersonPresence.YES_ROMANTIC_PARTNER,
                 FamilyRelationshipQuality.GOOD,
                 CloseRelationshipsQuality.VERY_GOOD
@@ -99,7 +97,6 @@ public class DataInitializer {
                 FavoriteColor.PINK,
                 Hobby.READING,
                 AgeRange.AGE_18_24,
-                SubstanceUse.NEVER,
                 ClosePersonPresence.YES_CLOSE_FRIEND,
                 FamilyRelationshipQuality.VERY_GOOD,
                 CloseRelationshipsQuality.GOOD
@@ -115,7 +112,6 @@ public class DataInitializer {
                 FavoriteColor.GREEN,
                 Hobby.GAMING,
                 AgeRange.AGE_35_44,
-                SubstanceUse.SOMETIMES,
                 ClosePersonPresence.YES_FAMILY_MEMBER,
                 FamilyRelationshipQuality.NEUTRAL,
                 CloseRelationshipsQuality.NEUTRAL
@@ -131,7 +127,6 @@ public class DataInitializer {
                 FavoriteColor.BLACK,
                 Hobby.TRAVELING,
                 AgeRange.AGE_45_54,
-                SubstanceUse.REGULARLY, // Zmienione na bardziej zróżnicowane
                 ClosePersonPresence.NO_CLOSE_PERSON,
                 FamilyRelationshipQuality.DIFFICULT,
                 CloseRelationshipsQuality.DIFFICULT
@@ -147,7 +142,6 @@ public class DataInitializer {
                 FavoriteColor.OTHER, // Przykład użycia "OTHER"
                 Hobby.TECHNOLOGY_CODING,
                 AgeRange.AGE_55_64,
-                SubstanceUse.RECOVERING,
                 ClosePersonPresence.ITS_COMPLICATED,
                 FamilyRelationshipQuality.NO_CONTACT,
                 CloseRelationshipsQuality.NOT_APPLICABLE // Zmienione dla zróżnicowania

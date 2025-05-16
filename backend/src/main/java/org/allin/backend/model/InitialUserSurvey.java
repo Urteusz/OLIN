@@ -31,7 +31,7 @@ public class InitialUserSurvey {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
-    private FavoriteColor favoriteColor;  // ?
+    private FavoriteColor favoriteColor;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
@@ -40,10 +40,6 @@ public class InitialUserSurvey {
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
     private AgeRange ageRange;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 50)
-    private SubstanceUse substanceUse;  // ?
 
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
