@@ -78,9 +78,6 @@ export default function RootLayoutClient({
                 <p className="text-sm font-medium truncate" title={userData.name}>
                   {userData.name}
                 </p>
-                <p className="text-xs text-gray-500 truncate" title={userData.role}>
-                  {userData.role}
-                </p>
                 {userData.email && (
                   <p className="text-xs text-gray-400 truncate" title={userData.email}>
                     {userData.email}
