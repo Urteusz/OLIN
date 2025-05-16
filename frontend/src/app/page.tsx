@@ -104,7 +104,7 @@ export default function DashboardPage() {
   });
 
   // Stan przycisków
-  const [activeStat, setActiveStat] = useState<string>(chartData.datasets[0].label);
+  const [activeStat, setActiveStat] = useState<string>('Średnia');
 
   // Funkcja do aktualizacji widoczności danych
   const updateVisibility = (label: string) => {
