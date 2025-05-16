@@ -6,9 +6,9 @@ import { usePathname } from 'next/navigation';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: '📊' },
-  { name: 'Użytkownicy', href: '/users', icon: '👥' },
+  { name: 'Tasks', href: '/tasks', icon: '👥' },
   { name: 'Ustawienia', href: '/settings', icon: '⚙️' },
-  { name: 'Pomoc', href: '/help', icon: '❓' },
+  { name: 'Daily questions', href: '/dailyquestions', icon: '❓' },
 ];
 
 export default function RootLayoutClient({

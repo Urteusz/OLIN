@@ -6,7 +6,6 @@
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
   --secondary: #f3f4f6;
-  --text-muted: #6b7280;
   --border: #e5e7eb;
 }
 
@@ -16,7 +15,6 @@
     --foreground: #f8fafc;
     --secondary: #1e293b;
     --border: #334155;
-    --text-muted: #94a3b8;
   }
 }
 
