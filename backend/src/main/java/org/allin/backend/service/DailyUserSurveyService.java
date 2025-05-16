@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class DailyUserSurveyService {
@@ -42,6 +43,10 @@ public class DailyUserSurveyService {
 
     public Optional<DailyUserSurvey> findSurveyByUserId(UUID userId) {
         return dailySurveyRepository.findByUserId(userId);
+    }
+
+    public List<DailyUserSurvey> findAllSurveysByUsername(String username) {
+        return dailySurveyRepository.findAllByUserUsername(username);
     }
 
     @Transactional

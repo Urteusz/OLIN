@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/daily-user-surveys")
 public class DailyUserSurveyController {
@@ -25,5 +27,10 @@ public class DailyUserSurveyController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd podczas tworzenia ankiety dziennej: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/getDaily/{username}")
+    public List<DailyUserSurvey> getSurveysByUsername(@PathVariable String username) {
+        return dailyUserSurveyService.findAllSurveysByUsername(username);
     }
 }
