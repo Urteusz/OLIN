@@ -56,18 +56,19 @@ public class DataInitializer {
 
             // 3. Tworzenie 200 ankiet dziennych (średnio po 20 na użytkownika)
             Random random = new Random();
-            int surveysPerUser = 200 / users.size();
             LocalDateTime now = LocalDateTime.now();
-            for (int i = 0; i < users.size(); i++) {
-                UUID userId = users.get(i).getId();
-                for (int j = 0; j < surveysPerUser; j++) {
-                    // Losowe odpowiedzi 1-5, data rozłożona na ostatnie 30 dni
+            int daysBack = 20;
+            for (User user : users) {
+                UUID userId = user.getId();
+                for (int d = 0; d < daysBack; d++) {
                     int a1 = 1 + random.nextInt(5);
                     int a2 = 1 + random.nextInt(5);
                     int a3 = 1 + random.nextInt(5);
                     int a4 = 1 + random.nextInt(5);
                     int a5 = 1 + random.nextInt(5);
-                    LocalDateTime date = now.minusDays(random.nextInt(30)).minusHours(random.nextInt(24));
+                    LocalDateTime date = now.minusDays(d);
+                    // Możesz ustawić godzinę np. na 18:00, aby wszystkie ankiety były z tej samej pory dnia:
+                    date = date.withHour(18).withMinute(0).withSecond(0).withNano(0);
                     createDailySurvey(dailyUserSurveyService, userId, a1, a2, a3, a4, a5, date);
                 }
             }

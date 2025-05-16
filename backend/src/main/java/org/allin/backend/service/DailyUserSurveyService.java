@@ -9,6 +9,7 @@ import org.allin.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
@@ -19,13 +20,15 @@ public class DailyUserSurveyService {
     private final DailyUserSurveyRepository dailySurveyRepository;
     private final UserRepository userRepository;
     private final DailyUserSurveyMapper dailySurveyMapper;
+    private final UserService userService;
 
     public DailyUserSurveyService(DailyUserSurveyRepository dailySurveyRepository,
                                   UserRepository userRepository,
-                                  DailyUserSurveyMapper dailySurveyMapper) {
+                                  DailyUserSurveyMapper dailySurveyMapper, UserService userService) {
         this.dailySurveyRepository = dailySurveyRepository;
         this.userRepository = userRepository;
         this.dailySurveyMapper = dailySurveyMapper;
+        this.userService = userService;
     }
 
     @Transactional
@@ -76,5 +79,13 @@ public class DailyUserSurveyService {
             throw new RuntimeException("Survey not found with id: " + id);
         }
         dailySurveyRepository.deleteById(id);
+    }
+
+    public Optional<DailyUserSurvey> findTodaysSurvey(UUID userId) {
+        User user = userService.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
+        return dailySurveyRepository.findByUserAndDateFilledIsBetween(user, startOfDay, endOfDay);
     }
 }

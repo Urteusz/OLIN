@@ -3,6 +3,8 @@ package org.allin.backend.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.allin.backend.dto.groq.ChatMessage;
+import org.allin.backend.model.DailyUserSurvey;
+import org.allin.backend.model.InitialUserSurvey;
 import org.allin.backend.model.Task;
 import org.allin.backend.model.User;
 import org.allin.backend.repository.TaskRepository;
@@ -24,14 +26,99 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final GroqApiService groqApiService;
     private final UserService userService;
+    private final InitialUserSurveyService initialUserSurveyService;
+    private final DailyUserSurveyService dailyUserSurveyService;
 
     /**
      * The default prompt to send to the Groq API for generating tasks.
      */
-    private static final String DEFAULT_TASK_PROMPT = 
-            "Generate a list of 5 daily tasks for a user. Each task should be on a separate line. " +
-            "Tasks should be simple, actionable items that can be completed in a day. " +
-            "Do not include any numbering, bullets, or extra text.";
+    private static final String DEFAULT_TASK_PROMPT =
+            """
+                    Poniżej masz wersję **w całości po polsku**, która wymuszana modelu zwrócenie *tylko* poprawnego JSON‑a bez jakichkolwiek dodatków. Skopiuj ją 1‑do‑1 (bez zmian ani spacji na końcu).
+                    
+                    ```
+                    Jesteś doświadczonym psychologiem tworzącym aplikację wspierającą dobrostan psychiczny.\s
+                    Zwróć DOKŁADNIE jedną tablicę JSON z 5 obiektami i NIC więcej – bez wyjaśnień, nagłówków, Markdownu czy znaków kodu.\s
+                    Pierwszym znakiem Twojej odpowiedzi musi być „[”, a ostatnim „]”.\s
+                    
+                    PROFIL
+                    wiek_przedział: 24‑30 \s
+                    zaimki: on/jego \s
+                    używki: papierosy, alkohol \s
+                    zainteresowania: gotowanie, fotografia, śpiewanie \s
+                    relacja_z_rodziną: bardzo_słaba \s
+                    ma_bliską_osobę: tak \s
+                    preferencje_zadań: kreatywne, solo, spokojne \s
+                    
+                    KONTEKST
+                    current_time_utc: 2025‑05‑16T22:00:00Z \s
+                    quiet_hours: 22‑07 \s
+                    max_single_task_min: 20 \s
+                    min_single_task_min: 5 \s
+                    
+                    ZASADY
+                    1. Personalizuj każde zadanie, wykorzystując co najmniej jedną informację z profilu. \s
+                    2. Nigdy nie sugeruj alkoholu, nikotyny ani kosztownych zakupów. \s
+                    3. W quiet_hours generuj wyłącznie ciche, domowe zadania ≤10 min. \s
+                    4. Poza quiet_hours zadania mogą trwać 5‑20 min. \s
+                    5. Nie powtarzaj motywu w więcej niż jednym zadaniu. \s
+                    6. Ton przyjazny, bez słów „powinieneś”, „musisz”, „cierpisz”. \s
+                    7. Każdy obiekt musi zawierać klucze (w tej kolejności): \s
+                       task_id (slug), title (≤8 słów), description (≤2 zdania), \s
+                       tags (2‑4 słowa), estimated_duration_min (int), created_at (current_time_utc). \s
+                    8. Wynik musi przejść strict JSON.parse(). \s
+                    
+                    Wygeneruj dokładnie 5 zadań. Zwróć wyłącznie surowy JSON.
+                    ```
+                    """;
+
+    private String generatePrompString(UUID userId) throws Exception {
+        StringBuilder prompt = new StringBuilder();
+
+        prompt.append("Jesteś doświadczonym psychologiem tworzącym aplikację wspierającą dobrostan psychiczny.\n" +
+                "Zwróć DOKŁADNIE jedną tablicę JSON z 5 obiektami i NIC więcej – bez wyjaśnień, nagłówków, markdownu " +
+                "czy znaków kodu.\nPierwszym znakiem Twojej odpowiedzi musi być „[”, a ostatnim „]”.\n");
+
+        InitialUserSurvey initialUserSurvey = initialUserSurveyService.findSurveyByUserId(userId)
+                .orElseThrow(() -> new Exception("InitialUserSurvey not found"));
+        String userProfileString =
+                "PROFIL" +
+                "\nwiek_przedzial: " + initialUserSurvey.getAgeRange() +
+                "\nzaimki: " + initialUserSurvey.getPronouns() +
+                "\nhobby: " + initialUserSurvey.getHobby() +
+                "\nma bliska osobe: " + initialUserSurvey.getClosePersonPresence() +
+                "\nstosunki z rodzina: " + initialUserSurvey.getFamilyRelationshipQuality() +
+                "\nstusunki z bliskimi: " + initialUserSurvey.getCloseRelationshipsQuality();
+        prompt.append(userProfileString);
+
+        DailyUserSurvey dailyUserSurvey = dailyUserSurveyService.findTodaysSurvey(userId)
+                .orElseThrow(() -> new Exception("DailyUserSurvey not found"));;
+        String userDailyProfileString =
+                "PROFIL DZIENNY" +
+                "\npoziom zadowolenia: " + dailyUserSurvey.getAnswer1() +
+                "\nstan fizyczny: " + dailyUserSurvey.getAnswer2() +
+                "\npoziom motywacji: " + dailyUserSurvey.getAnswer3() +
+                "\npoziom skupienia: " + dailyUserSurvey.getAnswer4() +
+                "\nchęć odkrywania: " + dailyUserSurvey.getAnswer5();
+        prompt.append(userDailyProfileString);
+
+        prompt.append("ZASADY\n" +
+                "1. Personalizuj każde zadanie, wykorzystując co najmniej jedną informację z profilu. s\n" +
+                "2. Nigdy nie sugeruj alkoholu, nikotyny ani kosztownych zakupów. s\n" +
+                "3. W quiet_hours generuj wyłącznie ciche, domowe zadania ≤10 min. s\n" +
+                "4. Poza quiet_hours zadania mogą trwać 5‑20 min. s\n" +
+                "5. Nie powtarzaj motywu w więcej niż jednym zadaniu. s\n" +
+                "6. Ton przyjazny, bez słów „powinieneś”, „musisz”, „cierpisz”. s\n" +
+                "7. Każdy obiekt musi zawierać klucze (w tej kolejności): s\n" +
+                "task_id (slug), title (≤8 słów), description (≤2 zdania), s\n" +
+                "tags (2‑4 słowa), estimated_duration_min (int), created_at (current_time_utc). s\n" +
+                "8. Wynik musi przejść strict JSON.parse(). s\n" +
+                "9. W przypadku gdy user zaznaczy w PROFIL DZIENNY cos na niska wartosc (1 lub 2), staraj się nie" +
+                "proponować czynnosci z tym zwiazanych.\n" +
+                "\nWygeneruj dokładnie 5 zadań. Zwróć wyłącznie surowy JSON.");
+
+        return prompt.toString();
+    }
 
     /**
      * Gets tasks for a user on a given date. If no tasks exist for that date,
@@ -65,13 +152,15 @@ public class TaskService {
      */
     private List<Task> generateTasksUsingGroqApi(User user, LocalDate date) {
         // Create a message to send to the Groq API
-        ChatMessage userMessage = ChatMessage.builder()
-                .role("user")
-                .content(DEFAULT_TASK_PROMPT)
-                .build();
+        String prompt;
+        try {
+            prompt = generatePrompString(user.getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         // Send the message to the Groq API
-        String response = groqApiService.sendMessage(DEFAULT_TASK_PROMPT);
+        String response = groqApiService.sendMessage(prompt);
 
         // Parse the response and create tasks
         List<Task> tasks = parseResponseAndCreateTasks(user, date, response);
