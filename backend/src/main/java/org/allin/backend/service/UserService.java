@@ -1,5 +1,6 @@
 package org.allin.backend.service;
 
+import org.allin.backend.dto.UserLoginDto;
 import org.allin.backend.dto.UserRegistrationDto;
 import org.allin.backend.mapper.UserMapper;
 import org.allin.backend.model.User;
@@ -36,6 +37,16 @@ public class UserService {
 
     public Optional<User> findById(UUID id) {
         return userRepository.findById(id);
+    }
+
+    public User authenticateUser(UserLoginDto userLoginDto) throws Exception {
+        User user = userRepository.findByUsername(userLoginDto.username())
+                .orElseThrow(() -> new Exception("User not found"));
+
+        if(!passwordEncoder.matches(userLoginDto.password(), user.getPassword())) {
+            throw new Exception("Wrong password");
+        }
+        return user;
     }
 
 //    public Optional<List<User>> findAll() {
