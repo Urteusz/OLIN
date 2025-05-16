@@ -1,5 +1,6 @@
 package org.allin.backend.controller;
 
+import org.allin.backend.dto.UserLoginDto;
 import org.allin.backend.dto.UserRegistrationDto;
 import org.allin.backend.model.User;
 import org.allin.backend.service.UserService;
@@ -26,6 +27,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Użytkownik zarejestrowany pomyślnie. ID: " + newUser.getId());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd podczas rejestracji: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody UserLoginDto loginDto) {
+        try {
+            User user = userService.authenticateUser(loginDto);
+            return ResponseEntity.ok("Login successful. Welcome " + user.getUsername());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password: " + e.getMessage());
         }
     }
 }
