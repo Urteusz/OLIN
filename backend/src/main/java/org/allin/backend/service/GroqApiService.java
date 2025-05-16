@@ -62,19 +62,25 @@ public class GroqApiService {
                 .build();
 
         try {
+            log.info("Sending request to Groq API: {}", request);
             return webClient.post()
                     .uri("/chat/completions")
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(ChatCompletionResponse.class)
                     .onErrorResume(WebClientResponseException.class, e -> {
-                        log.error("Error calling Groq API: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-                        return Mono.error(new GroqApiException("Error calling Groq API: " + e.getMessage(), e));
+                        String errorBody = e.getResponseBodyAsString();
+                        log.error("Error calling Groq API: {} - {}", e.getStatusCode(), errorBody);
+                        return Mono.error(new GroqApiException("Error calling Groq API: " + errorBody, e));
                     })
                     .block();
         } catch (Exception e) {
             log.error("Error calling Groq API", e);
-            throw new GroqApiException("Error calling Groq API: " + e.getMessage(), e);
+            String errorMessage = e.getMessage();
+            if (e.getCause() != null) {
+                errorMessage += " - Cause: " + e.getCause().getMessage();
+            }
+            throw new GroqApiException("Error calling Groq API: " + errorMessage, e);
         }
     }
 
@@ -94,7 +100,7 @@ public class GroqApiService {
         ChatCompletionResponse response = createChatCompletion(List.of(userMessage));
 
         if (response != null && !response.getChoices().isEmpty()) {
-            return response.getChoices().get(0).getMessage().getContent();
+            return response.getChoices().getFirst().getMessage().getContent();
         }
 
         return "No response from the model.";

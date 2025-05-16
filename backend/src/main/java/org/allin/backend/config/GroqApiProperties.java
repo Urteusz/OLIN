@@ -17,14 +17,14 @@ public class GroqApiProperties {
      * Should be set as an environment variable GROQ_API_KEY or in the application.properties file.
      */
     private String key;
-    
+
     /**
      * The Groq API base URL.
      */
     private String baseUrl = "https://api.groq.com/openai/v1";
-    
+
     /**
      * The default model to use for chat completions.
      */
-    private String defaultModel = "llama-3.1-8b-instant";
+    private String defaultModel = "meta-llama/llama-4-scout-17b-16e-instruct";
 }

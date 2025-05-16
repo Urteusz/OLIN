@@ -26,7 +26,7 @@ public class GroqApiController {
      * @param message The message to send.
      * @return The response content from the model.
      */
-    @PostMapping("/message")
+    @PostMapping(value = "/message", consumes = "text/plain", produces = "text/plain")
     public ResponseEntity<String> sendMessage(@RequestBody String message) {
         String response = groqApiService.sendMessage(message);
         return ResponseEntity.ok(response);
