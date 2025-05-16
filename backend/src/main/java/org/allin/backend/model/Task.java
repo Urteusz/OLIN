@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -35,8 +36,14 @@ public class Task {
     @Column(nullable = false)
     private boolean isCompleted;
 
+    @Column(nullable = false)
+    private LocalDate date;
+
     @PrePersist
     protected void onCreate() {
         isCompleted = false;
+        if (date == null) {
+            date = LocalDate.now();
+        }
     }
 }
