@@ -26,6 +26,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
+                        // Dodaj nowy endpoint do listy dozwolonych
+                        .requestMatchers(HttpMethod.POST, "/api/initial-user-surveys/register").permitAll()
+                        // Allow access to Groq API endpoints
+                        .requestMatchers("/api/groq/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
