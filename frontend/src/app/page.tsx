@@ -39,7 +39,7 @@ export default function DashboardPage() {
     datasets: [
       {
         label: 'Poziom zadowolenia',
-        data: [75, 80, 85, 90, 88, 92, 95],
+        data: [5, 3, 3, 4, 1, 2, 5],
         borderColor: '#4F46E5',
         backgroundColor: '#4F46E5',
         tension: 0.4,
@@ -47,7 +47,7 @@ export default function DashboardPage() {
       },
       {
         label: 'Stan fizyczny',
-        data: [60, 65, 70, 75, 78, 80, 82],
+        data: [2, 3, 2, 4, 4, 1, 3],
         borderColor: '#10B981',
         backgroundColor: '#10B981',
         tension: 0.4,
@@ -55,7 +55,7 @@ export default function DashboardPage() {
       },
       {
         label: 'Motywacja',
-        data: [70, 75, 80, 85, 82, 88, 90],
+        data: [3, 4, 2, 4, 3, 4, 5],
         borderColor: '#F59E0B',
         backgroundColor: '#F59E0B',
         tension: 0.4,
@@ -63,7 +63,7 @@ export default function DashboardPage() {
       },
       {
         label: 'Skupienie',
-        data: [65, 70, 75, 80, 82, 85, 88],
+        data: [2, 3, 2, 1, 4, 3, 4],
         borderColor: '#DB2777',
         backgroundColor: '#DB2777',
         tension: 0.4,
@@ -71,7 +71,7 @@ export default function DashboardPage() {
       },
       {
         label: 'Ukończone zadania',
-        data: [4, 5, 6, 7, 6, 8, 9],
+        data: [1, 3, 2, 1, 2, 3, 3],
         borderColor: '#2563EB',
         backgroundColor: '#2563EB',
         tension: 0.4,
@@ -87,23 +87,19 @@ export default function DashboardPage() {
     let maxSum = 0;
     let bestDayIndex = 0;
 
-    // Konwertujemy dane zadań na wartości procentowe (0-100)
-    const normalizedData = data.map(arr => 
-      arr.map((val, i) => 
-        i === 4 ? val * 10 : val  // Zadania są na pozycji 4, mnożymy przez 10
-      )
-    );
-
     // Sumujemy wartości dla każdego dnia
     for (let i = 0; i < days.length; i++) {
-      const daySum = normalizedData.reduce((sum, arr) => sum + arr[i], 0);
+      let daySum = 0;
+      for (let j = 0; j < data.length; j++) {
+        daySum += data[j][i];
+      }
       if (daySum > maxSum) {
         maxSum = daySum;
         bestDayIndex = i;
       }
     }
 
-    const bestDayData = normalizedData.map(arr => arr[bestDayIndex]);
+    const bestDayData = data.map(arr => arr[bestDayIndex]);
     const bestDay = days[bestDayIndex];
 
     return {
@@ -147,10 +143,10 @@ export default function DashboardPage() {
     scales: {
       y: {
         beginAtZero: false,
-        max: 100,
+        max: 5,
         min: 0,
         ticks: {
-          stepSize: 10,
+          stepSize: 1,
           color: '#6B7280',
           font: {
             family: 'Inter',
@@ -216,7 +212,7 @@ export default function DashboardPage() {
                   <div 
                     className="h-2.5 rounded-full" 
                     style={{ 
-                      width: `${stat.value}%`,
+                      width: `${stat.value*20}%`,
                       backgroundColor: stat.color
                     }}
                   />
