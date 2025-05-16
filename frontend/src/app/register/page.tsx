@@ -10,9 +10,8 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
     firstName: '',
-    lastName: '',
     email: '',
-    preferredLanguage: 'polish'
+    preferredLanguage: 'pol'
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,22 +45,35 @@ export default function RegisterPage() {
           username: formData.username,
           password: formData.password,
           firstName: formData.firstName,
-          lastName: formData.lastName,
           email: formData.email,
           preferredLanguage: formData.preferredLanguage
         }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Wystąpił błąd podczas rejestracji');
+      // Najpierw pobieramy odpowiedź jako tekst
+      const responseText = await response.text();
+      let responseData;
+      
+      // Próbujemy sparsować odpowiedź jako JSON
+      try {
+        responseData = responseText ? JSON.parse(responseText) : {};
+      } catch (e) {
+        // Jeśli to nie jest JSON, używamy tekstu jako wiadomości
+        responseData = { message: responseText };
       }
 
-      // Redirect to login or dashboard after successful registration
-      router.push('/login');
+      if (!response.ok) {
+        throw new Error(responseData.message || `Błąd HTTP: ${response.status}`);
+      }
+
+      // Przekierowanie po udanej rejestracji
+      router.push('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wystąpił nieznany błąd');
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : 'Wystąpił nieznany błąd podczas rejestracji';
+      setError(errorMessage);
+      console.error('Błąd rejestracji:', err);
     } finally {
       setIsLoading(false);
     }
@@ -105,19 +117,6 @@ export default function RegisterPage() {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Imię"
                 value={formData.firstName}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="lastName" className="sr-only">Nazwisko</label>
-              <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Nazwisko"
-                value={formData.lastName}
                 onChange={handleChange}
               />
             </div>
@@ -181,6 +180,17 @@ export default function RegisterPage() {
               <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Zaloguj się
               </a>
+            </p>
+          </div>
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-500">
+              Wersja API: {JSON.stringify({
+                username: formData.username,
+                password: formData.password,
+                firstName: formData.firstName,
+                email: formData.email,
+                preferredLanguage: formData.preferredLanguage
+              }, null, 2)}
             </p>
           </div>
         </form>
