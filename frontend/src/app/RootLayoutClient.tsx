@@ -11,11 +11,26 @@ const navItems = [
   { name: 'Daily questions', href: '/dailyquestions', icon: '❓' },
 ];
 
+// Typy dla danych użytkownika
+interface UserData {
+  id: string;
+  name: string;
+  avatar?: string;
+  email?: string;
+}
+
 export default function RootLayoutClient({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Przykładowe dane użytkownika - w przyszłości będą pobierane z backendu
+  const [userData] = useState<UserData>({
+    id: '1',
+    name: 'Jan Kowalski',
+    email: 'jan.kowalski@example.com',
+    avatar: '👤' // Można to zastąpić URL-em do zdjęcia
+  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const pathname = usePathname();
 
@@ -56,12 +71,21 @@ export default function RootLayoutClient({
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-              👤
+              {userData.avatar}
             </div>
             {isSidebarOpen && (
-              <div className="ml-3">
-                <p className="text-sm font-medium">Admin</p>
-                <p className="text-xs text-gray-500">Administrator</p>
+              <div className="ml-3 overflow-hidden">
+                <p className="text-sm font-medium truncate" title={userData.name}>
+                  {userData.name}
+                </p>
+                <p className="text-xs text-gray-500 truncate" title={userData.role}>
+                  {userData.role}
+                </p>
+                {userData.email && (
+                  <p className="text-xs text-gray-400 truncate" title={userData.email}>
+                    {userData.email}
+                  </p>
+                )}
               </div>
             )}
           </div>
