@@ -1,0 +1,34 @@
+package org.allin.backend.controller;
+
+import org.allin.backend.dto.UserRegistrationDto;
+import org.allin.backend.model.User;
+import org.allin.backend.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/user")
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody UserRegistrationDto registrationDto) {
+        try {
+            User newUser = userService.addUser(registrationDto);
+            // Możesz zwrócić stworzonego użytkownika lub tylko status sukcesu
+            // return ResponseEntity.ok(newUser); // Zwraca całego użytkownika
+            return ResponseEntity.status(HttpStatus.CREATED).body("Użytkownik zarejestrowany pomyślnie. ID: " + newUser.getId());
+        } catch (Exception e) { // Przykładowa obsługa błędów
+            // Loguj błąd: e.getMessage()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd podczas rejestracji: " + e.getMessage());
+        }
+    }
+}
