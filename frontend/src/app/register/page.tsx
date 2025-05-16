@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUser } from '../../context/UserContext';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { setUser } = useUser();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -26,6 +28,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
     if (formData.password !== formData.confirmPassword) {
       setError('Hasła nie są identyczne');
@@ -33,40 +36,20 @@ export default function RegisterPage() {
     }
 
     setIsLoading(true);
-    setError('');
-
+    
     try {
-      const response = await fetch('http://localhost:8080/api/user/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-          firstName: formData.firstName,
-          email: formData.email,
-          preferredLanguage: formData.preferredLanguage
-        }),
-      });
-
-      // Najpierw pobieramy odpowiedź jako tekst
-      const responseText = await response.text();
-      let responseData;
+      // Tworzymy obiekt użytkownika
+      const userData = {
+        id: '1',
+        name: formData.firstName || formData.username,
+        email: formData.email,
+        avatar: '👤'
+      };
       
-      // Próbujemy sparsować odpowiedź jako JSON
-      try {
-        responseData = responseText ? JSON.parse(responseText) : {};
-      } catch (e) {
-        // Jeśli to nie jest JSON, używamy tekstu jako wiadomości
-        responseData = { message: responseText };
-      }
-
-      if (!response.ok) {
-        throw new Error(responseData.message || `Błąd HTTP: ${response.status}`);
-      }
-
-      // Przekierowanie po udanej rejestracji
+      // Ustawiamy użytkownika w kontekście (co automatycznie zapisze go w localStorage)
+      setUser(userData);
+      
+      // Przekierowujemy na stronę główną
       router.push('/');
     } catch (err) {
       const errorMessage = err instanceof Error 
