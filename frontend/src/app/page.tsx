@@ -13,6 +13,21 @@ import {
   Legend,
 } from 'chart.js';
 
+// Define chart data types
+interface ChartDataset {
+  label: string;
+  data: number[];
+  borderColor: string;
+  backgroundColor: string;
+  tension: number;
+  hidden: boolean;
+}
+
+interface ChartData {
+  labels: string[];
+  datasets: ChartDataset[];
+}
+
 // Register the chart components
 ChartJS.register(
   CategoryScale,
@@ -33,9 +48,9 @@ ChartJS.defaults.scale.grid.display = true;
 ChartJS.defaults.scale.grid.drawTicks = false;
 
 export default function DashboardPage() {
-  // Przykładowe dane dla wykresów
-  const chartData = {
-    labels: ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'],
+  // Stan wykresu
+  const [chartData, setChartData] = useState<ChartData>({
+    labels: ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nd'],
     datasets: [
       {
         label: 'Poziom zadowolenia',
@@ -43,7 +58,7 @@ export default function DashboardPage() {
         borderColor: '#4F46E5',
         backgroundColor: '#4F46E5',
         tension: 0.4,
-        fill: true,
+        hidden: true,
       },
       {
         label: 'Stan fizyczny',
@@ -51,7 +66,7 @@ export default function DashboardPage() {
         borderColor: '#10B981',
         backgroundColor: '#10B981',
         tension: 0.4,
-        fill: true,
+        hidden: true,
       },
       {
         label: 'Motywacja',
@@ -59,7 +74,7 @@ export default function DashboardPage() {
         borderColor: '#F59E0B',
         backgroundColor: '#F59E0B',
         tension: 0.4,
-        fill: true,
+        hidden: true,
       },
       {
         label: 'Skupienie',
@@ -67,7 +82,15 @@ export default function DashboardPage() {
         borderColor: '#DB2777',
         backgroundColor: '#DB2777',
         tension: 0.4,
-        fill: true,
+        hidden: true,
+      },
+      {
+        label: 'Średnia',
+        data: [3, 3.25, 2.25, 3.25, 3, 2.75, 4],
+        borderColor: '#6B7280',
+        backgroundColor: '#6B7280',
+        tension: 0.4,
+        hidden: false,
       },
       {
         label: 'Ukończone zadania',
@@ -75,9 +98,25 @@ export default function DashboardPage() {
         borderColor: '#2563EB',
         backgroundColor: '#2563EB',
         tension: 0.4,
-        fill: true,
+        hidden: true,
       },
     ],
+  });
+
+  // Stan przycisków
+  const [activeStat, setActiveStat] = useState<string>(chartData.datasets[0].label);
+
+  // Funkcja do aktualizacji widoczności danych
+  const updateVisibility = (label: string) => {
+    setActiveStat(label === activeStat ? '' : label);
+    
+    // Aktualizujemy dane wykresu
+    const newChartData = JSON.parse(JSON.stringify(chartData));
+    newChartData.datasets.forEach((ds: ChartDataset) => {
+      ds.hidden = label === '' ? false : ds.label !== label;
+    });
+    
+    setChartData(newChartData);
   };
 
   // Obliczamy najlepszy dzień
@@ -179,6 +218,80 @@ export default function DashboardPage() {
 
       {/* Wykres */}
       <div className="bg-white rounded-lg shadow p-6">
+        {/* Przyciski filtru */}
+        <div className="flex flex-wrap gap-2 mb-4">
+        <button
+            onClick={() => updateVisibility('Średnia')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              activeStat === 'Średnia'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Średnia
+          </button>
+          <button
+            onClick={() => updateVisibility('Poziom zadowolenia')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              activeStat === 'Poziom zadowolenia'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Poziom zadowolenia
+          </button>
+          <button
+            onClick={() => updateVisibility('Stan fizyczny')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              activeStat === 'Stan fizyczny'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Stan fizyczny
+          </button>
+          <button
+            onClick={() => updateVisibility('Motywacja')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              activeStat === 'Motywacja'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Motywacja
+          </button>
+          <button
+            onClick={() => updateVisibility('Skupienie')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              activeStat === 'Skupienie'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Skupienie
+          </button>
+          <button
+            onClick={() => updateVisibility('Ukończone zadania')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              activeStat === 'Ukończone zadania'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Ukończone zadania
+          </button>
+          <button
+            onClick={() => updateVisibility('')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              activeStat === ''
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Pokaż wszystkie
+          </button>
+        </div>
+
         <div className="h-[400px]">
           <Line 
             data={chartData} 
