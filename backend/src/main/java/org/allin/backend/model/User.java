@@ -35,8 +35,6 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    private LocalDate dateOfBirth;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

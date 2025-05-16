@@ -23,11 +23,8 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody UserRegistrationDto registrationDto) {
         try {
             User newUser = userService.addUser(registrationDto);
-            // Możesz zwrócić stworzonego użytkownika lub tylko status sukcesu
-            // return ResponseEntity.ok(newUser); // Zwraca całego użytkownika
             return ResponseEntity.status(HttpStatus.CREATED).body("Użytkownik zarejestrowany pomyślnie. ID: " + newUser.getId());
-        } catch (Exception e) { // Przykładowa obsługa błędów
-            // Loguj błąd: e.getMessage()
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd podczas rejestracji: " + e.getMessage());
         }
     }

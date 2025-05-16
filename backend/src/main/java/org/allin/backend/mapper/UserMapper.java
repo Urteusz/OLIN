@@ -15,7 +15,7 @@ public class UserMapper {
 
         User user = new User();
         user.setUsername(dto.username());
-        user.setPassword(dto.password()); // Pamiętaj, że hashowanie hasła powinno odbyć się w serwisie
+        user.setPassword(dto.password());
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
         user.setEmail(dto.email());
