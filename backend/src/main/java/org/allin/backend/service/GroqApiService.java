@@ -1,6 +1,5 @@
 package org.allin.backend.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.allin.backend.config.GroqApiProperties;
 import org.allin.backend.dto.groq.ChatCompletionRequest;
@@ -15,9 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-/**
- * Service for interacting with the Groq API.
- */
 @Service
 @Slf4j
 public class GroqApiService {
@@ -25,36 +21,15 @@ public class GroqApiService {
     private final GroqApiProperties groqApiProperties;
     private final WebClient webClient;
 
-    /**
-     * Constructor for GroqApiService.
-     *
-     * @param groqApiProperties The Groq API properties.
-     * @param webClient The WebClient for making HTTP requests to the Groq API.
-     */
     public GroqApiService(GroqApiProperties groqApiProperties, @Qualifier("groqWebClient") WebClient webClient) {
         this.groqApiProperties = groqApiProperties;
         this.webClient = webClient;
     }
 
-    /**
-     * Sends a chat completion request to the Groq API.
-     *
-     * @param messages The list of messages to include in the request.
-     * @return The chat completion response.
-     * @throws GroqApiException If an error occurs while communicating with the Groq API.
-     */
     public ChatCompletionResponse createChatCompletion(List<ChatMessage> messages) {
         return createChatCompletion(messages, groqApiProperties.getDefaultModel());
     }
 
-    /**
-     * Sends a chat completion request to the Groq API with a specific model.
-     *
-     * @param messages The list of messages to include in the request.
-     * @param model    The model to use for the completion.
-     * @return The chat completion response.
-     * @throws GroqApiException If an error occurs while communicating with the Groq API.
-     */
     public ChatCompletionResponse createChatCompletion(List<ChatMessage> messages, String model) {
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model(model)
@@ -84,13 +59,6 @@ public class GroqApiService {
         }
     }
 
-    /**
-     * Sends a simple message to the Groq API and returns the response content.
-     *
-     * @param content The message content.
-     * @return The response content from the model.
-     * @throws GroqApiException If an error occurs while communicating with the Groq API.
-     */
     public String sendMessage(String content) {
         ChatMessage userMessage = ChatMessage.builder()
                 .role("user")

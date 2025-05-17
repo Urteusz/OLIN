@@ -49,12 +49,6 @@ public class UserService {
         return user;
     }
 
-//    public Optional<List<User>> findAll() {
-//        List<User> users = new ArrayList<>();
-//        userRepository.findAll().forEach(users::add);
-//        return users;
-//    }
-
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }

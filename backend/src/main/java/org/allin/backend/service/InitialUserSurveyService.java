@@ -5,7 +5,7 @@ import org.allin.backend.mapper.InitialUserSurveyMapper;
 import org.allin.backend.model.InitialUserSurvey;
 import org.allin.backend.model.User;
 import org.allin.backend.repository.InitialUserSurveyRepository;
-import org.allin.backend.repository.UserRepository; // To fetch the User
+import org.allin.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,12 +31,11 @@ public class InitialUserSurveyService {
 
     @Transactional
     public InitialUserSurvey addInitialUserSurvey(InitialUserSurveyDto surveyDto) {
-        // Try to find the user, if not found create a new one
         User user = userRepository.findById(surveyDto.userId())
                 .orElseGet(() -> {
                     User newUser = new User();
                     newUser.setId(surveyDto.userId());
-                    newUser.setEmail(surveyDto.userId() + "@example.com"); // Set a dummy email
+                    newUser.setEmail(surveyDto.userId() + "@example.com");
                     return userRepository.save(newUser);
                 });
 
@@ -67,15 +66,10 @@ public class InitialUserSurveyService {
         InitialUserSurvey existingSurvey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new RuntimeException("Survey not found with id: " + surveyId));
 
-        // Ensure the user ID in the DTO matches the user associated with the existing survey,
-        // or handle as per your business logic (e.g., disallow changing the associated user).
         if (surveyDto.userId() != null && !existingSurvey.getUser().getId().equals(surveyDto.userId())) {
-            // If you want to allow changing the user, fetch the new user.
-            // Otherwise, throw an exception or ignore the userId from DTO for updates.
-            // For now, let's assume the user associated with the survey doesn't change.
             User user = userRepository.findById(surveyDto.userId())
                     .orElseThrow(() -> new RuntimeException("User not found with id: " + surveyDto.userId()));
-            existingSurvey.setUser(user); // Or throw error if user change is not allowed
+            existingSurvey.setUser(user);
         }
 
         existingSurvey.setPronouns(surveyDto.pronouns());
@@ -85,7 +79,6 @@ public class InitialUserSurveyService {
         existingSurvey.setClosePersonPresence(surveyDto.closePersonPresence());
         existingSurvey.setFamilyRelationshipQuality(surveyDto.familyRelationshipQuality());
         existingSurvey.setCloseRelationshipsQuality(surveyDto.closeRelationshipsQuality());
-        // The @PreUpdate annotation in InitialUserSurvey will handle updatedAt
 
         return surveyRepository.save(existingSurvey);
     }
