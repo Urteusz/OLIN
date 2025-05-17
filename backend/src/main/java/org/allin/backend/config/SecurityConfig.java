@@ -37,6 +37,8 @@ package org.allin.backend.config;
                             .requestMatchers("/api/groq/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/daily-user-surveys/register").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
+                            // Zezwól na dostęp do endpointów tasks
+                            .requestMatchers("/api/tasks/**").permitAll()
                             // Dodaj tutaj inne publiczne endpointy, jeśli są potrzebne, np. logowanie
                             .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                             .anyRequest().authenticated() // Wszystkie inne żądania wymagają uwierzytelnienia

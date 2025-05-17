@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import confetti from 'canvas-confetti';
+import { useUser } from '../../context/UserContext';
 // Simple text icons as fallback
 const CheckIcon = () => <span>✓</span>;
 const ClockIcon = ({ className = '' }: { className?: string }) => (
@@ -11,15 +12,10 @@ const ClockIcon = ({ className = '' }: { className?: string }) => (
 // Komponent dla płynnego rozwijania
 const Collapsible = ({ isOpen, children }: { isOpen: boolean; children: React.ReactNode }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number | string>(0);
 
   useEffect(() => {
-    if (isOpen && contentRef.current) {
-      // Ustawiamy wysokość na dokładną wartość przed animacją
-      setHeight(contentRef.current.scrollHeight + 'px');
-    } else {
-      setHeight(0);
-    }
+    // Effect to handle animation when isOpen changes
+    // We're using CSS for animation instead of JS height manipulation
   }, [isOpen]);
 
   return (
@@ -35,71 +31,122 @@ const Collapsible = ({ isOpen, children }: { isOpen: boolean; children: React.Re
 };
 
 interface Task {
-  id: number;
+  id: string; // UUID from backend
   title: string;
   description: string;
-  details: string;
+  details: string; // We'll use description as details if not provided
   estimatedTime: string; // e.g., "30 min", "2 godziny"
   completed: boolean;
+  date?: string; // Optional date field from backend
 }
 
 export default function TasksPage() {
+  const { user } = useUser();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [taskToComplete, setTaskToComplete] = useState<number | null>(null);
-  const [hoveredTask, setHoveredTask] = useState<number | null>(null);
+  const [taskToComplete, setTaskToComplete] = useState<string | null>(null);
+  const [hoveredTask, setHoveredTask] = useState<string | null>(null);
+  const [errorMessage, setError] = useState<string | null>(null);
 
-  // Simulate fetching tasks from an API
+  // Define the interface for the backend task DTO
+  interface TaskDto {
+    taskId: string;
+    title: string;
+    description: string;
+    estimatedTime: number;
+    isCompleted: boolean;
+    date: string;
+  }
+
+  // Fetch tasks from the backend API
   useEffect(() => {
     const fetchTasks = async () => {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Mock data - in a real app, this would come from your backend
-      const mockTasks: Task[] = [
-        {
-          id: 1,
-          title: 'Przygotować prezentację',
-          description: 'Prezentacja dla klienta',
-          details: 'Przygotować szczegółową prezentację dotyczącą postępów projektu. Uwzględnić najnowsze dane i statystyki. Dodać sekcję z wnioskami i rekomendacjami.',
-          estimatedTime: '2 godziny',
-          completed: false
-        },
-        {
-          id: 2,
-          title: 'Zadzwonić do dostawcy',
-          description: 'Potwierdzenie dostawy',
-          details: 'Skontaktować się z dostawcą w sprawie zamówienia #12345. Potwierdzić termin dostawy i uzgodnić szczegóły odbioru. Zapytać o możliwość wcześniejszego terminu.',
-          estimatedTime: '30 minut',
-          completed: false
-        },
-        {
-          id: 3,
-          title: 'Zrobić zakupy spożywcze',
-          description: 'Lista zakupów na tydzień',
-          details: 'Kupić: mleko, jajka, chleb, owoce, warzywa, mięso, ryż, makaron, sery, woda mineralna. Sprawdzić daty ważności i wybierać produkty świeże.',
-          estimatedTime: '1 godzina',
-          completed: false
-        },
-        {
-          id: 4,
-          title: 'Przegląd techniczny samochodu',
-          description: 'Wizyta u mechanika',
-          details: 'Umówić przegląd techniczny samochodu. Sprawdzić stan hamulców, poziom płynów, ciśnienie w oponach. Zapytać o konieczne wymiany części eksploatacyjnych.',
-          estimatedTime: '1.5 godziny',
-          completed: false
-        },
-      ];
+      setIsLoading(true);
+      setError(null);
 
-      setTasks(mockTasks);
-      setIsLoading(false);
+      try {
+        // If user is not logged in, use mock data or show message
+        if (!user || !user.id) {
+          // Use mock data for demonstration
+          const mockTasks: Task[] = [
+            {
+              id: "1",
+              title: 'Przygotować prezentację',
+              description: 'Prezentacja dla klienta',
+              details: 'Przygotować szczegółową prezentację dotyczącą postępów projektu. Uwzględnić najnowsze dane i statystyki. Dodać sekcję z wnioskami i rekomendacjami.',
+              estimatedTime: '2 godziny',
+              completed: false
+            },
+            {
+              id: "2",
+              title: 'Zadzwonić do dostawcy',
+              description: 'Potwierdzenie dostawy',
+              details: 'Skontaktować się z dostawcą w sprawie zamówienia #12345. Potwierdzić termin dostawy i uzgodnić szczegóły odbioru. Zapytać o możliwość wcześniejszego terminu.',
+              estimatedTime: '30 minut',
+              completed: false
+            },
+            {
+              id: "3",
+              title: 'Zrobić zakupy spożywcze',
+              description: 'Lista zakupów na tydzień',
+              details: 'Kupić: mleko, jajka, chleb, owoce, warzywa, mięso, ryż, makaron, sery, woda mineralna. Sprawdzić daty ważności i wybierać produkty świeże.',
+              estimatedTime: '1 godzina',
+              completed: false
+            },
+            {
+              id: "4",
+              title: 'Przegląd techniczny samochodu',
+              description: 'Wizyta u mechanika',
+              details: 'Umówić przegląd techniczny samochodu. Sprawdzić stan hamulców, poziom płynów, ciśnienie w oponach. Zapytać o konieczne wymiany części eksploatacyjnych.',
+              estimatedTime: '1.5 godziny',
+              completed: false
+            },
+          ];
+
+          setTasks(mockTasks);
+          setIsLoading(false);
+          return;
+        }
+
+        // Fetch tasks from the backend API
+        const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        const response = await fetch(`http://localhost:8080/api/tasks/user/${user.id}?date=${today}`, {
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch tasks');
+        }
+
+        const tasksFromApi = await response.json() as TaskDto[];
+
+        // Map the backend DTO to our frontend Task interface
+        const mappedTasks: Task[] = tasksFromApi.map((task) => ({
+          id: task.taskId,
+          title: task.title,
+          description: task.description,
+          details: task.description, // Use description as details
+          estimatedTime: `${task.estimatedTime} min`, // Convert to string format
+          completed: task.isCompleted,
+          date: task.date
+        }));
+
+        setTasks(mappedTasks);
+      } catch (err) {
+        console.error('Error fetching tasks:', err);
+        setError('Failed to fetch tasks. Please try again later.');
+        // Use empty array if fetch fails
+        setTasks([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchTasks();
-  }, []);
+  }, [user]);
 
-  const confirmTaskCompletion = (taskId: number) => {
+  const confirmTaskCompletion = (taskId: string) => {
     setTaskToComplete(taskId);
   };
 
@@ -153,18 +200,18 @@ export default function TasksPage() {
     setTaskToComplete(null);
   };
 
-  const toggleTaskCompletion = (taskId: number) => {
+  const toggleTaskCompletion = (taskId: string) => {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
-    
+
     // Jeśli zadanie jest już ukończone, nie robimy nic
     if (task.completed) return;
-    
+
     // Tylko dla niezakończonych zadań pokazujemy potwierdzenie
     confirmTaskCompletion(taskId);
   };
 
-  const toggleTaskExpansion = (taskId: number) => {
+  const toggleTaskExpansion = (taskId: string) => {
     setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
   };
 
@@ -178,6 +225,30 @@ export default function TasksPage() {
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-20 bg-gray-200 rounded-lg"></div>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Show error message if there was an error fetching tasks
+  if (errorMessage) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Lista zadań</h1>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <p>{errorMessage}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show message if user is not logged in
+  if (!user) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Lista zadań</h1>
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg">
+          <p>Zaloguj się, aby zobaczyć swoje zadania.</p>
         </div>
       </div>
     );
@@ -252,7 +323,7 @@ export default function TasksPage() {
             </button>
           </div>
         </div>
-        
+
         <Collapsible isOpen={expandedTaskId === task.id}>
           <div className="p-4 pt-4 border-t border-gray-100 dark:border-gray-700 mt-3">
             <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Szczegóły zadania:</h4>

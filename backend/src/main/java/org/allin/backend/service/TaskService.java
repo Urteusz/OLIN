@@ -101,6 +101,29 @@ public class TaskService {
     }
 
     /**
+     * Gets tasks for a user by username on a given date. If no tasks exist for that date,
+     * generates new tasks using the Groq API with the default prompt.
+     *
+     * @param username The username of the user.
+     * @param date The date for which to get tasks.
+     * @return A list of tasks for the user on the given date.
+     */
+    public List<Task> getTasksForUserByUsername(String username, LocalDate date) {
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+
+        // Check if tasks exist for the user on the given date
+        if (taskRepository.existsByUserAndDate(user, date)) {
+            log.info("Tasks found for user {} on date {}", username, date);
+            return taskRepository.findByUserAndDate(user, date);
+        }
+
+        // No tasks found, generate new tasks using the Groq API with the default prompt
+        log.info("No tasks found for user {} on date {}, generating new tasks", username, date);
+        return generateTasksUsingGroqApi(user, date);
+    }
+
+    /**
      * Generates tasks for a user on a given date using the Groq API with the default prompt.
      *
      * @param user The user for whom to generate tasks.
@@ -140,30 +163,30 @@ public class TaskService {
      */
     private List<Task> parseResponseAndCreateTasks(User user, LocalDate date, String response) {
         List<Task> tasks = new ArrayList<>();
-        
+
         try {
             // Parse the JSON array from the response
             com.fasterxml.jackson.databind.JsonNode jsonNode = new com.fasterxml.jackson.databind.ObjectMapper()
                 .readTree(response);
-                
+
             if (jsonNode.isArray()) {
                 for (com.fasterxml.jackson.databind.JsonNode taskNode : jsonNode) {
                     Task task = new Task();
                     task.setUser(user);
                     task.setDate(date);
-                    
-                    
+
+
                     // Extract fields from JSON
                     if (taskNode.has("title")) {
                         task.setTitle(taskNode.get("title").asText());
                     }
-                    
+
                     if (taskNode.has("description")) {
                         task.setDescription(taskNode.get("description").asText());
                     } else {
                         task.setDescription("");
                     }
-                    
+
                     if (taskNode.has("estimated_duration_min")) {
                         task.setEstimatedTime(taskNode.get("estimated_duration_min").asInt());
                     } else {
@@ -194,7 +217,7 @@ public class TaskService {
                 }
             }
         }
-        
+
         return tasks;
     }
 }

@@ -33,14 +33,14 @@ public class TaskController {
      */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<TaskDto>> getTasksForUser(
-            @PathVariable UUID userId,
+            @PathVariable String userId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
         // Default to today if date is not provided
         LocalDate taskDate = date != null ? date : LocalDate.now();
 
         List<TaskDto> tasks = taskMapper.toDtoList(
-                taskService.getTasksForUserOnDate(userId, taskDate));
+                taskService.getTasksForUserByUsername(userId, taskDate));
 
         return ResponseEntity.ok(tasks);
     }
