@@ -5,8 +5,6 @@ import org.allin.backend.model.DailyUserSurvey;
 import org.allin.backend.model.User;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 public class DailyUserSurveyMapper {
 
@@ -22,7 +20,6 @@ public class DailyUserSurveyMapper {
         survey.setAnswer4(dto.answer4());
         survey.setAnswer5(dto.answer5());
 
-        // Convert the ISO string date to LocalDateTime using the DTO's method
         survey.setDateFilled(dto.getDateFilledAsLocalDateTime());
         return survey;
     }

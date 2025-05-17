@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useUser } from '../../context/UserContext';
+import React, {useState, useEffect, JSX} from 'react';
+import { useUser } from '@/context/UserContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaSmile, FaRunning, FaFire, FaBrain, FaCompass, FaCheck } from 'react-icons/fa';
 import { ResponsiveContainer, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, RadarChart } from 'recharts';
@@ -29,10 +29,21 @@ interface Question {
     id: number;
     text: string;
     value: number;
-    icon: React.ReactNode;
+    icon: JSX.Element;
     color: string;
     key: string;
 }
+
+const formatAxisTick = (text: string): string => {
+    const mapping: { [key: string]: string } = {
+        'Poziom zadowolenia': 'Zadowolenie',
+        'Stan fizyczny': 'Kondycja',
+        'Poziom motywacji': 'Motywacja',
+        'Poziom skupienia': 'Skupienie',
+        'Chęć odkrywania': 'Odkrywanie'
+    };
+    return mapping[text] || text.substring(0, 10); // Fallback to substring if no mapping
+};
 
 export default function DailyQuestionsPage() {
     const { user } = useUser();
@@ -101,7 +112,7 @@ export default function DailyQuestionsPage() {
         console.log('Current user:', user);
 
         // Simple validation that we have some kind of ID
-        if (!user.id || typeof user.id !== 'string') {
+        if (!user.id) {
             throw new Error('Nieprawidłowy identyfikator użytkownika');
         }
 
@@ -476,12 +487,13 @@ export default function DailyQuestionsPage() {
                             </div>
 
                             <ResponsiveContainer width="100%" height={250}>
-                                <RadarChart outerRadius="80%" data={questions}>
+                                <RadarChart outerRadius="75%" data={questions}>
                                     <PolarGrid stroke="#e5e7eb" strokeDasharray="3 3" />
                                     <PolarAngleAxis 
                                         dataKey="text" 
-                                        tick={{ fill: '#6b7280', fontSize: 10 }}
+                                        tick={{ fill: '#6b7280', fontSize: 9 }}
                                         tickLine={false}
+                                        tickFormatter={formatAxisTick}
                                     />
                                     <PolarRadiusAxis 
                                         angle={90} 
@@ -495,7 +507,7 @@ export default function DailyQuestionsPage() {
                                         dataKey="value" 
                                         stroke="#4F46E5" 
                                         fill="#4F46E5" 
-                                        fillOpacity={0.6}
+                                        fillOpacity={0.85}
                                     />
                                 </RadarChart>
                             </ResponsiveContainer>

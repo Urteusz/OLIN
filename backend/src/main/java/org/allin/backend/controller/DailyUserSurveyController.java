@@ -4,7 +4,6 @@ import org.allin.backend.dto.DailyUserSurveyDto;
 import org.allin.backend.dto.TaskDto;
 import org.allin.backend.mapper.TaskMapper;
 import org.allin.backend.model.DailyUserSurvey;
-import org.allin.backend.model.Task;
 import org.allin.backend.service.DailyUserSurveyService;
 import org.allin.backend.service.TaskService;
 import org.springframework.http.HttpStatus;

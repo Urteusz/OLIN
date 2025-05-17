@@ -6,18 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-/**
- * Configuration for WebClient beans.
- */
 @Configuration
 public class WebClientConfig {
-
-    /**
-     * Creates a WebClient bean configured for the Groq API.
-     *
-     * @param groqApiProperties The Groq API properties.
-     * @return A WebClient instance.
-     */
     @Bean
     public WebClient groqWebClient(GroqApiProperties groqApiProperties) {
         return WebClient.builder()
