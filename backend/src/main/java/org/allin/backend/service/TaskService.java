@@ -138,23 +138,60 @@ public class TaskService {
      */
     private List<Task> parseResponseAndCreateTasks(User user, LocalDate date, String response) {
         List<Task> tasks = new ArrayList<>();
-
-        // Split the response by lines
-        String[] lines = response.split("\n");
-
-        for (String line : lines) {
-            line = line.trim();
-            if (!line.isEmpty()) {
-                Task task = new Task();
-                task.setUser(user);
-                task.setDate(date);
-                task.setTitle(line);
-                task.setDescription("Generated task");
-                task.setEstimatedTime(30); // Default estimated time in minutes
-                tasks.add(task);
+        
+        try {
+            // Parse the JSON array from the response
+            com.fasterxml.jackson.databind.JsonNode jsonNode = new com.fasterxml.jackson.databind.ObjectMapper()
+                .readTree(response);
+                
+            if (jsonNode.isArray()) {
+                for (com.fasterxml.jackson.databind.JsonNode taskNode : jsonNode) {
+                    Task task = new Task();
+                    task.setUser(user);
+                    task.setDate(date);
+                    
+                    
+                    // Extract fields from JSON
+                    if (taskNode.has("title")) {
+                        task.setTitle(taskNode.get("title").asText());
+                    }
+                    
+                    if (taskNode.has("description")) {
+                        task.setDescription(taskNode.get("description").asText());
+                    } else {
+                        task.setDescription("");
+                    }
+                    
+                    if (taskNode.has("estimated_duration_min")) {
+                        task.setEstimatedTime(taskNode.get("estimated_duration_min").asInt());
+                    } else {
+                        task.setEstimatedTime(15); // Default estimated time in minutes
+                    }
+                    
+                    tasks.add(task);
+                }
+            } else {
+                log.error("Expected JSON array in response, but got: {}", response);
+                throw new RuntimeException("Invalid response format from Groq API");
+            }
+        } catch (Exception e) {
+            log.error("Error parsing Groq API response: {}", e.getMessage(), e);
+            // Fallback to simple parsing if JSON parsing fails
+            String[] lines = response.split("\n");
+            for (String line : lines) {
+                line = line.trim();
+                if (!line.isEmpty()) {
+                    Task task = new Task();
+                    task.setUser(user);
+                    task.setDate(date);
+                    task.setTitle(line);
+                    task.setDescription("");
+                    task.setEstimatedTime(15);
+                    tasks.add(task);
+                }
             }
         }
-
+        
         return tasks;
     }
 }

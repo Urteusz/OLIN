@@ -37,6 +37,12 @@ export default function InitialUserSurvey() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+
+  // Set isClient to true after component mounts
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Check if user is loaded
   useEffect(() => {
@@ -47,12 +53,12 @@ export default function InitialUserSurvey() {
 
   // Redirect if not logged in
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (isClient && !isLoading && !user) {
       router.push('/login');
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, isClient]);
 
-  if (isLoading) {
+  if (!isClient || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
