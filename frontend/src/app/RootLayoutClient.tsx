@@ -8,10 +8,10 @@ import { usePathname, useRouter } from 'next/navigation';
 const navItems = [
   { name: 'Dashboard', href: '/', icon: '📊' },
   { name: 'Tasks', href: '/tasks', icon: '👥' },
-  { name: 'Ustawienia', href: '/settings', icon: '⚙️' },
   { name: 'Daily questions', href: '/dailyquestions', icon: '❓' },
   { name: 'Initial Questionnaire', href: '/initial-survey', icon: '📝' },
-  { name: 'Slots', href: '/slot-machine', icon: '🎰'}
+  { name: 'Slots', href: '/slot-machine', icon: '🎰'},
+  { name: 'Ustawienia', href: '/settings', icon: '⚙️' },
 ];
 
 // Typy dla danych użytkownika

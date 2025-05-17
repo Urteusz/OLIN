@@ -114,7 +114,7 @@ const SlotMachinePage = () => {
 
         initializeReels(true);
 
-        const forceThreeSeven = Math.random() < 0.9; // 90% szansy na próbę uzyskania trzech siódemek
+        const forceThreeSeven = true; // 100% szansy na próbę uzyskania trzech siódemek
 
         const spinPromises = reelRefs.map(async (reelRef, i) => {
             const reelStrip = reelRef.current;
