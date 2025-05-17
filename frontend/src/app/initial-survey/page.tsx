@@ -161,7 +161,7 @@ export default function InitialUserSurvey() {
         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
         required
       >
-        <option value="">Select an option</option>
+        <option value="">Wybierz opcję</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -172,78 +172,78 @@ export default function InitialUserSurvey() {
   );
 
   const pronounsOptions: { value: Pronouns; label: string }[] = [
-    { value: 'SHE_HER', label: 'She/Her' },
-    { value: 'HE_HIM', label: 'He/Him' },
-    { value: 'THEY_THEM', label: 'They/Them' },
-    { value: 'OTHER', label: 'Other' },
-    { value: 'PREFER_NOT_TO_SAY', label: 'Prefer not to say' },
+    { value: 'SHE_HER', label: 'Ona/Jej' },
+    { value: 'HE_HIM', label: 'On/Jego' },
+    { value: 'THEY_THEM', label: 'Oni/Ich' },
+    { value: 'OTHER', label: 'Inne' },
+    { value: 'PREFER_NOT_TO_SAY', label: 'Wolę nie podawać' },
   ];
 
   const colorOptions: { value: FavoriteColor; label: string }[] = [
-    { value: 'RED', label: 'Red' },
-    { value: 'BLUE', label: 'Blue' },
-    { value: 'GREEN', label: 'Green' },
-    { value: 'YELLOW', label: 'Yellow' },
-    { value: 'BLACK', label: 'Black' },
-    { value: 'WHITE', label: 'White' },
-    { value: 'ORANGE', label: 'Orange' },
-    { value: 'PURPLE', label: 'Purple' },
+    { value: 'RED', label: 'Czerwony' },
+    { value: 'BLUE', label: 'Niebieski' },
+    { value: 'GREEN', label: 'Zielony' },
+    { value: 'YELLOW', label: 'Żółty' },
+    { value: 'BLACK', label: 'Czarny' },
+    { value: 'WHITE', label: 'Biały' },
+    { value: 'ORANGE', label: 'Pomarańczowy' },
+    { value: 'PURPLE', label: 'Fioletowy' },
   ];
 
   const hobbyOptions: { value: Hobby; label: string }[] = [
-    { value: 'SPORTS', label: 'Sports' },
-    { value: 'READING', label: 'Reading' },
-    { value: 'GAMING', label: 'Gaming' },
-    { value: 'MUSIC', label: 'Music' },
-    { value: 'ART_CRAFT', label: 'Art & Craft' },
-    { value: 'TRAVELING', label: 'Traveling' },
-    { value: 'COOKING_BAKING', label: 'Cooking/Baking' },
-    { value: 'GARDENING', label: 'Gardening' },
-    { value: 'MOVIES_TV_SHOWS', label: 'Movies/TV Shows' },
-    { value: 'TECHNOLOGY_CODING', label: 'Technology/Coding' },
-    { value: 'PHOTOGRAPHY', label: 'Photography' },
-    { value: 'DANCING', label: 'Dancing' },
-    { value: 'WRITING', label: 'Writing' },
-    { value: 'FISHING', label: 'Fishing' },
-    { value: 'HIKING', label: 'Hiking' },
-    { value: 'YOGA', label: 'Yoga' },
-    { value: 'COLLECTING', label: 'Collecting' },
-    { value: 'BOARD_GAMES', label: 'Board Games' },
+    { value: 'SPORTS', label: 'Sport' },
+    { value: 'READING', label: 'Czytanie' },
+    { value: 'GAMING', label: 'Gry' },
+    { value: 'MUSIC', label: 'Muzyka' },
+    { value: 'ART_CRAFT', label: 'Sztuka i Rękodzieło' },
+    { value: 'TRAVELING', label: 'Podróże' },
+    { value: 'COOKING_BAKING', label: 'Gotowanie/Pieczenie' },
+    { value: 'GARDENING', label: 'Ogród' },
+    { value: 'MOVIES_TV_SHOWS', label: 'Filmy/Seriale' },
+    { value: 'TECHNOLOGY_CODING', label: 'Technologia/Programowanie' },
+    { value: 'PHOTOGRAPHY', label: 'Fotografia' },
+    { value: 'DANCING', label: 'Taniec' },
+    { value: 'WRITING', label: 'Pisanie' },
+    { value: 'FISHING', label: 'Wędkarstwo' },
+    { value: 'HIKING', label: 'Wędrówki' },
+    { value: 'YOGA', label: 'Joga' },
+    { value: 'COLLECTING', label: 'Kolekcjonerstwo' },
+    { value: 'BOARD_GAMES', label: 'Gry planszowe' },
   ];
 
   const ageRangeOptions: { value: AgeRange; label: string }[] = [
-    { value: 'AGE_13_17', label: '13-17 years' },
-    { value: 'AGE_18_24', label: '18-24 years' },
-    { value: 'AGE_25_34', label: '25-34 years' },
-    { value: 'AGE_35_44', label: '35-44 years' },
-    { value: 'AGE_45_54', label: '45-54 years' },
-    { value: 'AGE_55_64', label: '55-64 years' },
-    { value: 'AGE_65_80', label: '65-80 years' },
-    { value: 'AGE_80_PLUS', label: '80+ years' },
-    { value: 'PREFER_NOT_TO_SAY', label: 'Prefer not to say' },
+    { value: 'AGE_13_17', label: '13-17 lat' },
+    { value: 'AGE_18_24', label: '18-24 lat' },
+    { value: 'AGE_25_34', label: '25-34 lat' },
+    { value: 'AGE_35_44', label: '35-44 lat' },
+    { value: 'AGE_45_54', label: '45-54 lat' },
+    { value: 'AGE_55_64', label: '55-64 lat' },
+    { value: 'AGE_65_80', label: '65-80 lat' },
+    { value: 'AGE_80_PLUS', label: '80+ lat' },
+    { value: 'PREFER_NOT_TO_SAY', label: 'Wolę nie podawać' },
   ];
 
   const closePersonOptions: { value: ClosePersonPresence; label: string }[] = [
-    { value: 'YES_ROMANTIC_PARTNER', label: 'Yes, I have a romantic partner' },
-    { value: 'YES_CLOSE_FRIEND', label: 'Yes, I have a close friend' },
-    { value: 'YES_FAMILY_MEMBER', label: 'Yes, I have a family member' },
-    { value: 'YES_MULTIPLE_TYPES', label: 'Yes, multiple of the above' },
-    { value: 'NO_CLOSE_PERSON', label: 'No, I don\'t have a close person' },
-    { value: 'ITS_COMPLICATED', label: 'It\'s complicated' },
+    { value: 'YES_ROMANTIC_PARTNER', label: 'Tak, partner/partnerka' },
+    { value: 'YES_CLOSE_FRIEND', label: 'Tak, bliski przyjaciel' },
+    { value: 'YES_FAMILY_MEMBER', label: 'Tak, członek rodziny' },
+    { value: 'YES_MULTIPLE_TYPES', label: 'Tak, kilka z powyższych' },
+    { value: 'NO_CLOSE_PERSON', label: 'Nie, nie mam bliskiej osoby' },
+    { value: 'ITS_COMPLICATED', label: 'To skomplikowane' },
   ];
 
-  const relationshipQualityOptions: { value: FamilyRelationshipQuality | CloseRelationshipsQuality; label: string }[] = [
-    { value: 'VERY_GOOD', label: 'Very good' },
-    { value: 'GOOD', label: 'Good' },
-    { value: 'NEUTRAL', label: 'Neutral' },
-    { value: 'DIFFICULT', label: 'Difficult' },
-    { value: 'VERY_DIFFICULT', label: 'Very difficult' },
-    { value: 'NO_CONTACT', label: 'No contact' },
+  const relationshipQualityOptions: { value: FamilyRelationshipQuality; label: string }[] = [
+    { value: 'VERY_GOOD', label: 'Bardzo dobre' },
+    { value: 'GOOD', label: 'Dobre' },
+    { value: 'NEUTRAL', label: 'Neutralne' },
+    { value: 'DIFFICULT', label: 'Trudne' },
+    { value: 'VERY_DIFFICULT', label: 'Bardzo trudne' },
+    { value: 'NO_CONTACT', label: 'Brak kontaktu' },
   ];
 
   const closeRelationshipQualityOptions = [
     ...relationshipQualityOptions.filter(opt => opt.value !== 'NO_CONTACT'),
-    { value: 'NOT_APPLICABLE', label: 'Not applicable' }
+    { value: 'NOT_APPLICABLE', label: 'Nie dotyczy' }
   ];
 
   return (
@@ -273,26 +273,26 @@ export default function InitialUserSurvey() {
           )}
 
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6">
-            {renderSelectField('pronouns', 'What are your preferred pronouns?', pronounsOptions)}
-            {renderSelectField('favoriteColor', 'What is your favorite color?', colorOptions)}
-            {renderSelectField('hobby', 'What is your main hobby?', hobbyOptions)}
-            {renderSelectField('ageRange', 'What is your age range?', ageRangeOptions)}
+            {renderSelectField('pronouns', 'Jakich zaimków wolałabyś/wolałbyś używać?', pronounsOptions)}
+            {renderSelectField('favoriteColor', 'Jaki jest Twój ulubiony kolor?', colorOptions)}
+            {renderSelectField('hobby', 'Jakie jest Twoje główne hobby?', hobbyOptions)}
+            {renderSelectField('ageRange', 'W jakim jesteś przedziale wiekowym?', ageRangeOptions)}
             
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">About Your Relationships</h2>
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">O Twoich relacjach</h2>
               {renderSelectField(
                 'closePersonPresence',
-                'Do you have a close person in your life you can rely on?',
+                'Czy masz w życiu bliską osobę, na której możesz polegać?',
                 closePersonOptions
               )}
               {renderSelectField(
                 'familyRelationshipQuality',
-                'How would you describe your relationship with your family?',
+                'Jak oceniasz swoje relacje z rodziną?',
                 relationshipQualityOptions as { value: FamilyRelationshipQuality; label: string }[]
               )}
               {renderSelectField(
                 'closeRelationshipsQuality',
-                'How would you rate the quality of your close relationships?',
+                'Jak oceniasz jakość swoich bliskich relacji?',
                 closeRelationshipQualityOptions as { value: CloseRelationshipsQuality; label: string }[]
               )}
             </div>
