@@ -19,9 +19,7 @@ public class UserMapper {
         user.setFirstName(dto.firstName());
         user.setEmail(dto.email());
 
-        // Ustawienie wartości domyślnych lub początkowych dla nowych użytkowników
         user.setCreatedAt(LocalDateTime.now());
-        // updatedAt i lastLoginAt zostaną ustawione później, np. podczas aktualizacji lub logowania
 
         return user;
     }
