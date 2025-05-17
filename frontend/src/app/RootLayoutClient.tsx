@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useUser } from '../context/UserContext';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: '📊' },
@@ -15,8 +16,8 @@ const navItems = [
 interface UserData {
   id: string;
   name: string;
-  avatar?: string;
-  email?: string;
+  email: string;
+  avatar: string;
 }
 
 export default function RootLayoutClient({
@@ -24,15 +25,15 @@ export default function RootLayoutClient({
 }: {
   children: React.ReactNode;
 }) {
-  // Przykładowe dane użytkownika - w przyszłości będą pobierane z backendu
-  const [userData] = useState<UserData>({
-    id: '1',
-    name: 'Jan Kowalski',
-    email: 'jan.kowalski@example.com',
-    avatar: '👤' // Można to zastąpić URL-em do zdjęcia
-  });
+  const { user: userData, setUser } = useUser();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    setUser(null);
+    router.push('/');
+  };
 
   return (
     <div className="bg-gray-50 flex h-screen overflow-hidden">
@@ -69,23 +70,51 @@ export default function RootLayoutClient({
         </nav>
         
         <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-              {userData.avatar}
-            </div>
-            {isSidebarOpen && (
-              <div className="ml-3 overflow-hidden">
-                <p className="text-sm font-medium truncate" title={userData.name}>
-                  {userData.name}
-                </p>
-                {userData.email && (
-                  <p className="text-xs text-gray-400 truncate" title={userData.email}>
-                    {userData.email}
-                  </p>
+          {userData ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                  {userData.avatar}
+                </div>
+                {isSidebarOpen && (
+                  <div className="ml-3 overflow-hidden">
+                    <p className="text-sm font-medium truncate" title={userData.name}>
+                      {userData.name}
+                    </p>
+                    {userData.email && (
+                      <p className="text-xs text-gray-400 truncate" title={userData.email}>
+                        {userData.email}
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
+              <button
+                onClick={handleLogout}
+                className="text-gray-400 hover:text-red-500 ml-2"
+                title="Wyloguj się"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          ) : isSidebarOpen ? (
+            <Link 
+              href="/register"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center"
+            >
+              Zarejestruj się
+            </Link>
+          ) : (
+            <Link 
+              href="/register"
+              className="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center text-sm font-medium transition-colors"
+              title="Zarejestruj się"
+            >
+              +
+            </Link>
+          )}
         </div>
       </div>
       
