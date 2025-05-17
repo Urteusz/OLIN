@@ -27,18 +27,18 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Ustawienia</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Ustawienia</h1>
       
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
         <div className="space-y-6">
           {/* Temat */}
           <div>
-            <label className="block text-sm font-medium mb-2">Temat</label>
+            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Temat</label>
             <select
               value={settings.theme}
               onChange={handleThemeChange}
-              className="w-full p-2 border rounded-lg"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="light">Jasny</option>
               <option value="dark">Ciemny</option>
@@ -46,25 +46,25 @@ export default function SettingsPage() {
           </div>
 
           {/* Powiadomienia */}
-          <div>
-            <label className="flex items-center gap-2">
+          <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
               <input
                 type="checkbox"
                 checked={settings.notifications}
                 onChange={handleNotificationChange}
                 className="rounded"
               />
-              <span>Włącz powiadomienia</span>
+              <span className="text-gray-700 dark:text-gray-300">Otrzymuj powiadomienia</span>
             </label>
           </div>
 
           {/* Język */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Język</label>
+          <div className="mt-4">
+            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Język</label>
             <select
               value={settings.language}
               onChange={handleLanguageChange}
-              className="w-full p-2 border rounded-lg"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="pl">Polski</option>
               <option value="en">English</option>
@@ -72,12 +72,12 @@ export default function SettingsPage() {
           </div>
 
           {/* Strefa czasowa */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Strefa czasowa</label>
+          <div className="mt-4">
+            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Strefa czasowa</label>
             <select
               value={settings.timezone}
               onChange={handleTimezoneChange}
-              className="w-full p-2 border rounded-lg"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="Europe/Warsaw">Warszawa</option>
               <option value="UTC">UTC</option>

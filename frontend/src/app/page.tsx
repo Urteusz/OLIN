@@ -100,8 +100,8 @@ const CustomDot = (props: any) => {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-100">
-        <p className="font-medium text-gray-900 mb-2">{label}</p>
+      <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
+        <p className="font-medium text-gray-900 dark:text-white mb-2">{label}</p>
         <div className="space-y-1">
           {payload.map((entry: any, index: number) => (
             <div key={`item-${index}`} className="flex items-center">
@@ -109,7 +109,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                 className="w-3 h-3 rounded-full mr-2" 
                 style={{ backgroundColor: entry.color }}
               />
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
                 {entry.name}: <span className="font-medium">{entry.value}</span>
               </span>
             </div>
@@ -188,9 +188,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Chart Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="p-6 pb-2">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Stan z ostatnich 7 dni</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Stan z ostatnich 7 dni</h2>
           
           {/* Dataset Toggles */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -198,14 +198,14 @@ export default function DashboardPage() {
               onClick={toggleShowAll}
               className={`px-3 py-1.5 text-sm rounded-lg transition-all duration-200 ${
                 showAll 
-                  ? 'bg-indigo-100 text-indigo-700 font-medium' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-200 font-medium' 
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {showAll ? 'Ukryj wszystko' : 'Pokaż wszystkie'}
             </button>
             
-            <div className="h-5 w-px bg-gray-200 mx-1"></div>
+            <div className="h-5 w-px bg-gray-200 dark:bg-gray-600 mx-1"></div>
             
             <div className="flex flex-wrap gap-2">
               {datasets.map(ds => (
@@ -241,21 +241,23 @@ export default function DashboardPage() {
               data={chartData}
               margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" strokeOpacity={0.5} />
               <XAxis 
                 dataKey="name" 
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: '#6B7280', fontSize: 12 }}
                 padding={{ left: 10, right: 10 }}
+                stroke="#9CA3AF"
               />
               <YAxis 
                 domain={[0, 5]}
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: '#6B7280', fontSize: 12 }}
+                tick={{ fill: '#9CA3AF', fontSize: 12 }}
                 width={30}
                 tickCount={6}
+                stroke="#9CA3AF"
               />
               <Tooltip 
                 content={<CustomTooltip />}
@@ -314,18 +316,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Best Day Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Najlepszy dzień tygodnia</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Najlepszy dzień tygodnia</h2>
           
-          <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
+          <div className="bg-indigo-50 dark:bg-indigo-900/20 p-5 rounded-xl border border-indigo-100 dark:border-indigo-800">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-14 h-14 rounded-full bg-indigo-500 flex-shrink-0 flex items-center justify-center text-white text-2xl font-bold">
                 {bestDay.day}
               </div>
               <div>
-                <p className="text-lg font-semibold text-gray-900">{bestDay.day}</p>
-                <p className="text-sm text-indigo-700">
+                <p className="text-lg font-semibold text-gray-900 dark:text-white">{bestDay.day}</p>
+                <p className="text-sm text-indigo-700 dark:text-indigo-300">
                   Najlepszy wynik: <span className="font-medium">{bestDay.total.toFixed(1)} pkt</span>
                 </p>
               </div>
@@ -339,10 +341,10 @@ export default function DashboardPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                    className="bg-white p-4 rounded-lg border border-gray-100 shadow-xs"
+                    className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-100 dark:border-gray-600 shadow-xs"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-medium text-gray-600">{stat.name}</span>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{stat.name}</span>
                       <span 
                         className="text-sm font-semibold px-2 py-1 rounded-full"
                         style={{ 
@@ -353,7 +355,7 @@ export default function DashboardPage() {
                         {stat.value}
                       </span>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className="w-full bg-gray-100 dark:bg-gray-600 rounded-full h-2">
                       <motion.div 
                         className="h-2 rounded-full"
                         initial={{ width: 0 }}

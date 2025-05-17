@@ -124,7 +124,7 @@ export default function DailyQuestionsPage() {
                 console.error('Full server error details:', JSON.stringify(errorDetails, null, 2));
                 
                 // If we have a detailed error message from the backend, show it
-                if (responseData.message || responseData.error) {
+                if (responseData.message) {
                     throw new Error(`Błąd ${response.status}: ${errorMessage}`);
                 }
                 
@@ -145,13 +145,12 @@ export default function DailyQuestionsPage() {
     };
 
     return (
-        <div className="p-8">
-            <h1 className="text-2xl font-bold mb-6">Pytania codzienne</h1>
-
-            <form onSubmit={handleSubmit} className="space-y-4 bg-white rounded-lg shadow p-6">
+        <div className="p-6">
+            <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Pytania codzienne</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
                 {questions.map((question) => (
                     <div key={question.id} className="space-y-1">
-                        <label htmlFor={`question-${question.id}`} className="block text-sm font-medium">
+                        <label htmlFor={`question-${question.id}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             {question.text}
                         </label>
                         <div className="flex items-center space-x-2">
@@ -163,19 +162,24 @@ export default function DailyQuestionsPage() {
                                 step="1"
                                 value={question.value}
                                 onChange={(e) => handleSliderChange(question.id, parseInt(e.target.value))}
-                                className="w-3/4"
+                                className="w-3/4 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                                style={{
+                                    background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((question.value - 1) / 4) * 100}%, #e5e7eb ${((question.value - 1) / 4) * 100}%, #e5e7eb 100%)`
+                                }}
                             />
-                            <span className="text-sm">{question.value}</span>
+                            <span className="text-sm w-5 text-center font-medium text-gray-700 dark:text-gray-300">{question.value}</span>
                         </div>
                     </div>
                 ))}
 
-                <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-                >
-                    Zapisz odpowiedzi
-                </button>
+                <div className="pt-2">
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
+                    >
+                        Zapisz odpowiedzi
+                    </button>
+                </div>
             </form>
         </div>
     );

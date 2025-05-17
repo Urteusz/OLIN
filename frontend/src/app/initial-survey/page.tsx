@@ -60,8 +60,8 @@ export default function InitialUserSurvey() {
 
   if (!isClient || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
@@ -149,8 +149,8 @@ export default function InitialUserSurvey() {
     options: { value: string; label: string }[],
     required = true
   ) => (
-    <div className="mb-4">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+    <div className="mb-6">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <select
@@ -158,8 +158,8 @@ export default function InitialUserSurvey() {
         name={name}
         value={formData[name]}
         onChange={handleChange}
-        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        required={required}
+        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+        required
       >
         <option value="">Select an option</option>
         {options.map((option) => (
@@ -247,51 +247,69 @@ export default function InitialUserSurvey() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center text-gray-900 mb-8">Initial User Survey</h1>
-        
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-md">
-            {error}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ankieta wstępna</h1>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Dziękujemy za rejestrację! Prosimy o wypełnienie krótkiej ankiety, abyśmy mogli lepiej Cię poznać.
+            </p>
           </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {renderSelectField('pronouns', 'What are your preferred pronouns?', pronounsOptions)}
-          {renderSelectField('favoriteColor', 'What is your favorite color?', colorOptions)}
-          {renderSelectField('hobby', 'What is your main hobby?', hobbyOptions)}
-          {renderSelectField('ageRange', 'What is your age range?', ageRangeOptions)}
           
-          <div className="border-t border-gray-200 pt-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">About Your Relationships</h2>
-            {renderSelectField(
-              'closePersonPresence',
-              'Do you have a close person in your life you can rely on?',
-              closePersonOptions
-            )}
-            {renderSelectField(
-              'familyRelationshipQuality',
-              'How would you describe your relationship with your family?',
-              relationshipQualityOptions as { value: FamilyRelationshipQuality; label: string }[]
-            )}
-            {renderSelectField(
-              'closeRelationshipsQuality',
-              'How would you rate the quality of your close relationships?',
-              closeRelationshipQualityOptions as { value: CloseRelationshipsQuality; label: string }[]
-            )}
-          </div>
+          {error && (
+            <div className="mb-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
-          <div className="pt-6">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Survey'}
-            </button>
-          </div>
-        </form>
+          <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6">
+            {renderSelectField('pronouns', 'What are your preferred pronouns?', pronounsOptions)}
+            {renderSelectField('favoriteColor', 'What is your favorite color?', colorOptions)}
+            {renderSelectField('hobby', 'What is your main hobby?', hobbyOptions)}
+            {renderSelectField('ageRange', 'What is your age range?', ageRangeOptions)}
+            
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">About Your Relationships</h2>
+              {renderSelectField(
+                'closePersonPresence',
+                'Do you have a close person in your life you can rely on?',
+                closePersonOptions
+              )}
+              {renderSelectField(
+                'familyRelationshipQuality',
+                'How would you describe your relationship with your family?',
+                relationshipQualityOptions as { value: FamilyRelationshipQuality; label: string }[]
+              )}
+              {renderSelectField(
+                'closeRelationshipsQuality',
+                'How would you rate the quality of your close relationships?',
+                closeRelationshipQualityOptions as { value: CloseRelationshipsQuality; label: string }[]
+              )}
+            </div>
+
+            <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-5">
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {isSubmitting ? 'Zapisywanie...' : 'Zapisz odpowiedzi'}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

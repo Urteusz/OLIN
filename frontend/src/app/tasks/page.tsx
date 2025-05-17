@@ -172,8 +172,8 @@ export default function TasksPage() {
 
   if (isLoading) {
     return (
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-6">Zadania</h1>
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Lista zadań</h1>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-20 bg-gray-200 rounded-lg"></div>
@@ -190,7 +190,7 @@ export default function TasksPage() {
   const renderTaskItem = (task: Task) => (
     <li key={task.id} className="mb-3 last:mb-0">
       <div 
-        className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow px-5 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer border border-gray-100"
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all px-5 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border border-gray-100 dark:border-gray-700"
         onClick={() => toggleTaskExpansion(task.id)}
       >
         <div className="flex items-center justify-between">
@@ -210,8 +210,8 @@ export default function TasksPage() {
                 <button
                   className={`h-5 w-5 rounded-full flex items-center justify-center transition-colors ${
                     task.completed 
-                      ? 'bg-green-100 text-green-600' 
-                      : 'border-2 border-gray-300 hover:border-gray-400'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' 
+                      : 'border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
                   }`}
                   aria-label={task.completed ? 'Oznacz jako nieukończone' : 'Oznacz jako ukończone'}
                 >
@@ -219,7 +219,7 @@ export default function TasksPage() {
                 </button>
               </div>
               {hoveredTask === task.id && !task.completed && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-20">
+                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-20 dark:bg-gray-700 dark:border dark:border-gray-600">
                   Zaznacz jako zrealizowane
                 </div>
               )}
@@ -228,22 +228,20 @@ export default function TasksPage() {
               <p className={`text-base font-medium ${
                 task.completed 
                   ? 'text-gray-400 line-through' 
-                  : 'text-gray-900'
+                  : 'text-gray-900 dark:text-gray-100'
               }`}>
                 {task.title}
               </p>
-              <p className="text-sm text-gray-600">
-                {task.description}
-              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{task.description}</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center text-sm text-gray-500 bg-blue-50 px-3 py-1.5 rounded-full">
+            <div className="flex items-center text-sm text-gray-500 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full">
               <ClockIcon className="inline-block mr-1.5" />
               <span className="font-medium">{task.estimatedTime}</span>
             </div>
             <button 
-              className="text-gray-400 hover:text-gray-600 transition-transform duration-300 p-1 transform"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-transform duration-300 p-1 transform"
               style={{ transform: expandedTaskId === task.id ? 'rotate(180deg)' : 'rotate(0deg)' }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -256,12 +254,9 @@ export default function TasksPage() {
         </div>
         
         <Collapsible isOpen={expandedTaskId === task.id}>
-          <div className="mt-4 pl-2 pt-4 border-t border-gray-100">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Szczegóły zadania:</h4>
-            <p className="text-sm text-gray-600 whitespace-pre-line">{task.details}</p>
-            <div className="mt-3 flex items-center text-sm text-gray-500">
-              <span>Szczegółowy opis zadania</span>
-            </div>
+          <div className="p-4 pt-4 border-t border-gray-100 dark:border-gray-700 mt-3">
+            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Szczegóły zadania:</h4>
+            <p className="text-gray-700 dark:text-gray-300">{task.details}</p>
           </div>
         </Collapsible>
       </div>
@@ -271,7 +266,7 @@ export default function TasksPage() {
   return (
     <div className="p-4 md:p-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Zadania na dziś</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Zadania na dziś</h1>
         <div className="text-sm text-gray-500">
           {completedTasks.length} z {tasks.length} ukończonych
         </div>
@@ -322,7 +317,7 @@ export default function TasksPage() {
                 onClick={() => {
                   completeTask(true);
                 }}
-                className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
               >
                 Potwierdź
               </button>

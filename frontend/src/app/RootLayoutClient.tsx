@@ -26,6 +26,48 @@ export default function RootLayoutClient({
 }: {
   children: React.ReactNode;
 }) {
+  const [darkMode, setDarkMode] = useState(false);
+  
+  // Sprawdź preferencje systemowe przy pierwszym renderowaniu
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Sprawdź, czy użytkownik ma zapisane preferencje
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      // Użyj zapisanych preferencji lub preferencji systemowych
+      const initialDarkMode = savedTheme 
+        ? savedTheme === 'dark'
+        : prefersDark;
+        
+      setDarkMode(initialDarkMode);
+      
+      // Zastosuj motyw
+      if (initialDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, []);
+  
+  // Funkcja do przełączania motywu
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    
+    if (typeof window !== 'undefined') {
+      // Zapisz preferencje użytkownika
+      localStorage.setItem('theme', newDarkMode ? 'dark' : 'light');
+      
+      // Zastosuj motyw
+      if (newDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  };
   const { user: userData, setUser } = useUser();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const pathname = usePathname();
@@ -37,14 +79,14 @@ export default function RootLayoutClient({
   };
 
   return (
-    <div className="bg-gray-50 flex h-screen overflow-hidden">
+    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex h-screen overflow-hidden">
       {/* Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-white shadow-lg transition-all duration-300 flex flex-col`}>
+      <div className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 flex flex-col`}>
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
           {isSidebarOpen && <h1 className="text-xl font-bold">Menu</h1>}
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 rounded-lg hover:bg-gray-100"
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             {isSidebarOpen ? '«' : '»'}
           </button>
@@ -56,10 +98,10 @@ export default function RootLayoutClient({
               <li key={item.href} className="mb-1">
                 <Link 
                   href={item.href}
-                  className={`flex items-center p-3 rounded-lg transition-colors ${
+                  className={`flex items-center p-3 rounded-lg ${
                     pathname === item.href 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'hover:bg-gray-100'
+                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300' 
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
                   <span className="text-xl mr-3">{item.icon}</span>
@@ -72,33 +114,27 @@ export default function RootLayoutClient({
         
         <div className="p-4 border-t border-gray-200">
           {userData ? (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                  {userData.avatar}
-                </div>
-                {isSidebarOpen && (
-                  <div className="ml-3 overflow-hidden">
-                    <p className="text-sm font-medium truncate" title={userData.name}>
-                      {userData.name}
-                    </p>
-                    {userData.email && (
-                      <p className="text-xs text-gray-400 truncate" title={userData.email}>
-                        {userData.email}
-                      </p>
-                    )}
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold">
+                    {userData?.name?.charAt(0) || 'U'}
                   </div>
-                )}
+                  {isSidebarOpen && (
+                    <div className="ml-3">
+                      <p className="text-sm font-medium">{userData?.name || 'Użytkownik'}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{userData?.email || ''}</p>
+                    </div>
+                  )}
+                </div>
+                <button 
+                  onClick={toggleDarkMode}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                  aria-label={darkMode ? 'Włącz jasny motyw' : 'Włącz ciemny motyw'}
+                >
+                  {darkMode ? '🌞' : '🌙'}
+                </button>
               </div>
-              <button
-                onClick={handleLogout}
-                className="text-gray-400 hover:text-red-500 ml-2"
-                title="Wyloguj się"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
-                </svg>
-              </button>
             </div>
           ) : isSidebarOpen ? (
             <div className="space-y-2">
@@ -140,17 +176,19 @@ export default function RootLayoutClient({
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow-sm">
+        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="px-6 py-4">
-            <h1 className="text-xl font-semibold text-gray-800">
+            <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
               {navItems.find(item => item.href === pathname)?.name || 'Dashboard'}
             </h1>
           </div>
         </header>
         
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
+        <div className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900">
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   );
