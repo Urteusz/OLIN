@@ -29,49 +29,6 @@ public class TaskService {
     private final InitialUserSurveyService initialUserSurveyService;
     private final DailyUserSurveyService dailyUserSurveyService;
 
-    /**
-     * The default prompt to send to the Groq API for generating tasks.
-     */
-    private static final String DEFAULT_TASK_PROMPT =
-            """
-                    Poniżej masz wersję **w całości po polsku**, która wymuszana modelu zwrócenie *tylko* poprawnego JSON‑a bez jakichkolwiek dodatków. Skopiuj ją 1‑do‑1 (bez zmian ani spacji na końcu).
-                    
-                    ```
-                    Jesteś doświadczonym psychologiem tworzącym aplikację wspierającą dobrostan psychiczny.\s
-                    Zwróć DOKŁADNIE jedną tablicę JSON z 5 obiektami i NIC więcej – bez wyjaśnień, nagłówków, Markdownu czy znaków kodu.\s
-                    Pierwszym znakiem Twojej odpowiedzi musi być „[”, a ostatnim „]”.\s
-                    
-                    PROFIL
-                    wiek_przedział: 24‑30 \s
-                    zaimki: on/jego \s
-                    używki: papierosy, alkohol \s
-                    zainteresowania: gotowanie, fotografia, śpiewanie \s
-                    relacja_z_rodziną: bardzo_słaba \s
-                    ma_bliską_osobę: tak \s
-                    preferencje_zadań: kreatywne, solo, spokojne \s
-                    
-                    KONTEKST
-                    current_time_utc: 2025‑05‑16T22:00:00Z \s
-                    quiet_hours: 22‑07 \s
-                    max_single_task_min: 20 \s
-                    min_single_task_min: 5 \s
-                    
-                    ZASADY
-                    1. Personalizuj każde zadanie, wykorzystując co najmniej jedną informację z profilu. \s
-                    2. Nigdy nie sugeruj alkoholu, nikotyny ani kosztownych zakupów. \s
-                    3. W quiet_hours generuj wyłącznie ciche, domowe zadania ≤10 min. \s
-                    4. Poza quiet_hours zadania mogą trwać 5‑20 min. \s
-                    5. Nie powtarzaj motywu w więcej niż jednym zadaniu. \s
-                    6. Ton przyjazny, bez słów „powinieneś”, „musisz”, „cierpisz”. \s
-                    7. Każdy obiekt musi zawierać klucze (w tej kolejności): \s
-                       task_id (slug), title (≤8 słów), description (≤2 zdania), \s
-                       tags (2‑4 słowa), estimated_duration_min (int), created_at (current_time_utc). \s
-                    8. Wynik musi przejść strict JSON.parse(). \s
-                    
-                    Wygeneruj dokładnie 5 zadań. Zwróć wyłącznie surowy JSON.
-                    ```
-                    """;
-
     private String generatePrompString(UUID userId) throws Exception {
         StringBuilder prompt = new StringBuilder();
 
