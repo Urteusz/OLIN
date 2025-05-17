@@ -31,16 +31,31 @@ public class InitialUserSurveyService {
 
     @Transactional
     public InitialUserSurvey addInitialUserSurvey(InitialUserSurveyDto surveyDto) {
+        // Try to find the user, if not found create a new one
         User user = userRepository.findById(surveyDto.userId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + surveyDto.userId()));
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setId(surveyDto.userId());
+                    newUser.setEmail(surveyDto.userId() + "@example.com"); // Set a dummy email
+                    newUser.setActive(true);
+                    return userRepository.save(newUser);
+                });
 
         // Check if a survey already exists for this user
-        Optional<InitialUserSurvey> existingSurvey = surveyRepository.findByUserId(user.getId());
-        if (existingSurvey.isPresent()) {
+        if (surveyRepository.existsByUserId(user.getId())) {
             throw new RuntimeException("Initial survey already exists for user: " + user.getId());
         }
 
-        InitialUserSurvey survey = InitialUserSurveyMapper.toEntity(surveyDto, user);
+        InitialUserSurvey survey = new InitialUserSurvey();
+        survey.setUser(user);
+        survey.setPronouns(surveyDto.pronouns());
+        survey.setFavoriteColor(surveyDto.favoriteColor());
+        survey.setHobby(surveyDto.hobby());
+        survey.setAgeRange(surveyDto.ageRange());
+        survey.setClosePersonPresence(surveyDto.closePersonPresence());
+        survey.setFamilyRelationshipQuality(surveyDto.familyRelationshipQuality());
+        survey.setCloseRelationshipsQuality(surveyDto.closeRelationshipsQuality());
+        
         return surveyRepository.save(survey);
     }
 
