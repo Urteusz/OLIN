@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   LineChart,
   Line,
@@ -11,7 +11,11 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
-  Dot
+  RadialBarChart,
+  RadialBar,
+  PieChart,
+  Pie,
+  Cell
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -85,25 +89,29 @@ const initialDatasets: ChartDataset[] = [
   },
 ];
 
-const CustomDot = (props: any) => {
-  const { cx, cy, value, active, payload, color } = props;
-  if (!active) return null;
-  
-  return (
-    <g>
-      <circle cx={cx} cy={cy} r={8} fill="white" stroke={color} strokeWidth={2} />
-      <circle cx={cx} cy={cy} r={4} fill={color} />
-    </g>
-  );
-};
+// Define tooltip props interface
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    color: string;
+    dataKey: string;
+    payload: {
+      name: string;
+      [key: string]: string | number;
+    };
+  }>;
+  label?: string;
+}
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
         <p className="font-medium text-gray-900 dark:text-white mb-2">{label}</p>
         <div className="space-y-1">
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index) => (
             <div key={`item-${index}`} className="flex items-center">
               <div 
                 className="w-3 h-3 rounded-full mr-2" 
@@ -121,21 +129,103 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+// Streak data interface
+interface StreakDay {
+  day: string;
+  date: string;
+  completed: boolean;
+}
+
+// Mood distribution data for pie chart
+const moodDistributionData = [
+  { name: 'Bardzo dobrze', value: 35, color: '#4F46E5' },
+  { name: 'Dobrze', value: 40, color: '#10B981' },
+  { name: 'Neutralnie', value: 15, color: '#F59E0B' },
+  { name: 'Słabo', value: 10, color: '#DB2777' },
+];
+
+// Progress data for radial bar chart
+const progressData = [
+  { name: 'Zadania', value: 78, fill: '#4F46E5' },
+  { name: 'Ćwiczenia', value: 65, fill: '#10B981' },
+  { name: 'Medytacja', value: 83, fill: '#F59E0B' },
+];
+
 export default function DashboardPage() {
   const [datasets, setDatasets] = useState<ChartDataset[]>(initialDatasets);
   const [showAll, setShowAll] = useState<boolean>(false);
+  const [streakDays, setStreakDays] = useState<StreakDay[]>([]);
+  const [currentStreak, setCurrentStreak] = useState<number>(0);
+  const [longestStreak, setLongestStreak] = useState<number>(0);
+  const [showStreakAnimation, setShowStreakAnimation] = useState<boolean>(false);
+
+  // Initialize streak data
+  useEffect(() => {
+    // Mock streak data - in a real app, this would come from an API
+    const today = new Date();
+    const mockStreakDays: StreakDay[] = [];
+
+    // Generate last 14 days
+    for (let i = 13; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+
+      // Format date as DD.MM
+      const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+
+      // Day name (first 3 letters)
+      const dayNames = ['Nie', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'];
+      const dayName = dayNames[date.getDay()];
+
+      // Randomly determine if the day was completed (for demo purposes)
+      // In a real app, this would be based on actual user activity
+      let completed = Math.random() > 0.3; // 70% chance of completion
+
+      // Make sure the last 5 days are completed for a nice streak
+      if (i < 5) {
+        completed = true;
+      }
+
+      mockStreakDays.push({
+        day: dayName,
+        date: formattedDate,
+        completed
+      });
+    }
+
+    setStreakDays(mockStreakDays);
+
+    // Calculate current streak
+    let streak = 0;
+    for (let i = mockStreakDays.length - 1; i >= 0; i--) {
+      if (mockStreakDays[i].completed) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    setCurrentStreak(streak);
+    setLongestStreak(Math.max(streak, 7)); // Mock longest streak
+
+    // Show streak animation
+    setShowStreakAnimation(true);
+    const timer = setTimeout(() => setShowStreakAnimation(false), 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Prepare chart data for Recharts
   const chartData = useMemo<ChartDataPoint[]>(() => {
     return DAYS.map((day, dayIndex) => {
       const dayData: ChartDataPoint = { name: day };
-      
+
       datasets.forEach(ds => {
         if (ds.active || showAll) {
           dayData[ds.id] = ds.data[dayIndex];
         }
       });
-      
+
       return dayData;
     });
   }, [datasets, showAll]);
@@ -144,14 +234,14 @@ export default function DashboardPage() {
     setDatasets(prev => {
       const newDatasets = [...prev];
       const index = newDatasets.findIndex(ds => ds.id === id);
-      
+
       if (index !== -1) {
         newDatasets[index] = {
           ...newDatasets[index],
           active: !newDatasets[index].active
         };
       }
-      
+
       return newDatasets;
     });
   };
@@ -165,10 +255,10 @@ export default function DashboardPage() {
     const daySums = DAYS.map((_, dayIndex) => {
       return datasets.reduce((sum, ds) => sum + ds.data[dayIndex], 0);
     });
-    
+
     const maxSum = Math.max(...daySums);
     const bestDayIndex = daySums.indexOf(maxSum);
-    
+
     return {
       day: DAYS[bestDayIndex],
       total: maxSum,
@@ -187,11 +277,174 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Streak Counter Section */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Twoja seria</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500 dark:text-gray-400">Najdłuższa seria: </span>
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400">{longestStreak} dni</span>
+            </div>
+          </div>
+
+          {/* Current Streak */}
+          <div className="flex items-center gap-4 mb-6">
+            <motion.div 
+              className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex-shrink-0 flex items-center justify-center text-white shadow-lg"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ 
+                scale: showStreakAnimation ? [1, 1.1, 1] : 1, 
+                opacity: 1 
+              }}
+              transition={{ 
+                duration: 0.5,
+                scale: { duration: 0.3, times: [0, 0.5, 1] }
+              }}
+            >
+              <div className="text-center">
+                <div className="text-2xl font-bold">{currentStreak}</div>
+                <div className="text-xs font-medium">DNI</div>
+              </div>
+            </motion.div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {currentStreak > 0 ? 'Świetna robota!' : 'Rozpocznij serię!'}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                {currentStreak > 0 
+                  ? `Twoja seria trwa już ${currentStreak} ${currentStreak === 1 ? 'dzień' : currentStreak < 5 ? 'dni' : 'dni'}!` 
+                  : 'Wykonaj dzisiejsze zadania, aby rozpocząć serię.'}
+              </p>
+            </div>
+          </div>
+
+          {/* Streak Calendar */}
+          <div className="grid grid-cols-7 gap-2">
+            {streakDays.slice(-7).map((day, index) => (
+              <motion.div 
+                key={day.date}
+                className={`flex flex-col items-center p-2 rounded-lg ${
+                  day.completed 
+                    ? 'bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800' 
+                    : 'bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700'
+                }`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{day.day}</div>
+                <div 
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    day.completed 
+                      ? 'bg-indigo-500 text-white' 
+                      : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
+                  }`}
+                >
+                  <span className="text-xs">{day.date.split('.')[0]}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Progress and Mood Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Progress Chart */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="p-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Twój postęp</h2>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadialBarChart 
+                  cx="50%" 
+                  cy="50%" 
+                  innerRadius="20%" 
+                  outerRadius="80%" 
+                  barSize={20} 
+                  data={progressData}
+                  startAngle={90}
+                  endAngle={-270}
+                >
+                  <RadialBar
+                    background
+                    dataKey="value"
+                    cornerRadius={12}
+                    label={{ position: 'insideStart', fill: '#fff', fontWeight: 600, fontSize: 12 }}
+                  />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload;
+                        return (
+                          <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
+                            <p className="font-medium text-gray-900 dark:text-white">{data.name}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                              Postęp: <span className="font-medium">{data.value}%</span>
+                            </p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Legend 
+                    iconSize={10}
+                    layout="vertical"
+                    verticalAlign="middle"
+                    align="right"
+                    wrapperStyle={{ paddingLeft: '10px' }}
+                  />
+                </RadialBarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Mood Distribution */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="p-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Rozkład nastroju</h2>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={moodDistributionData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {moodDistributionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value, name) => [`${value}%`, name]}
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      borderRadius: '8px', 
+                      padding: '10px',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                      border: '1px solid #e5e7eb'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Chart Section */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="p-6 pb-2">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Stan z ostatnich 7 dni</h2>
-          
+
           {/* Dataset Toggles */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <button
@@ -204,9 +457,9 @@ export default function DashboardPage() {
             >
               {showAll ? 'Ukryj wszystko' : 'Pokaż wszystkie'}
             </button>
-            
+
             <div className="h-5 w-px bg-gray-200 dark:bg-gray-600 mx-1"></div>
-            
+
             <div className="flex flex-wrap gap-2">
               {datasets.map(ds => (
                 <button
@@ -284,7 +537,7 @@ export default function DashboardPage() {
                   </div>
                 )}
               />
-              
+
               {activeDatasets.map((ds) => (
                 <Line
                   key={ds.id}
@@ -305,7 +558,7 @@ export default function DashboardPage() {
                   animationEasing="ease-out"
                 />
               ))}
-              
+
               {/* Add reference lines */}
               <ReferenceLine y={0} stroke="#E5E7EB" />
               <ReferenceLine y={5} stroke="#E5E7EB" />
@@ -319,7 +572,7 @@ export default function DashboardPage() {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="p-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Najlepszy dzień tygodnia</h2>
-          
+
           <div className="bg-indigo-50 dark:bg-indigo-900/20 p-5 rounded-xl border border-indigo-100 dark:border-indigo-800">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-14 h-14 rounded-full bg-indigo-500 flex-shrink-0 flex items-center justify-center text-white text-2xl font-bold">
@@ -332,7 +585,7 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <AnimatePresence>
                 {bestDay.stats.map((stat, index) => (
