@@ -11,6 +11,7 @@ const navItems = [
   { name: 'Ustawienia', href: '/settings', icon: '⚙️' },
   { name: 'Daily questions', href: '/dailyquestions', icon: '❓' },
   { name: 'Initial Questionnaire', href: '/initial-survey', icon: '📝' },
+  { name: 'Slots', href: '/slot-machine', icon: '🎰'}
 ];
 
 // Typy dla danych użytkownika
