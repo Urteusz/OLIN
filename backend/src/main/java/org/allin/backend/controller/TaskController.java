@@ -33,8 +33,8 @@ public class TaskController {
      */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<TaskDto>> getTasksForUser(
-            @PathVariable String userId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @PathVariable("userId") String userId,
+            @RequestParam(name = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
         // Default to today if date is not provided
         LocalDate taskDate = date != null ? date : LocalDate.now();

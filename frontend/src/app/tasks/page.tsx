@@ -61,89 +61,52 @@ export default function TasksPage() {
 
   // Fetch tasks from the backend API
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchTasksForUser = async () => {
+      if (!user || !user.id) {
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
 
       try {
-        // If user is not logged in, use mock data or show message
-        if (!user || !user.id) {
-          // Use mock data for demonstration
-          const mockTasks: Task[] = [
-            {
-              id: "1",
-              title: 'Przygotować prezentację',
-              description: 'Prezentacja dla klienta',
-              details: 'Przygotować szczegółową prezentację dotyczącą postępów projektu. Uwzględnić najnowsze dane i statystyki. Dodać sekcję z wnioskami i rekomendacjami.',
-              estimatedTime: '2 godziny',
-              completed: false
-            },
-            {
-              id: "2",
-              title: 'Zadzwonić do dostawcy',
-              description: 'Potwierdzenie dostawy',
-              details: 'Skontaktować się z dostawcą w sprawie zamówienia #12345. Potwierdzić termin dostawy i uzgodnić szczegóły odbioru. Zapytać o możliwość wcześniejszego terminu.',
-              estimatedTime: '30 minut',
-              completed: false
-            },
-            {
-              id: "3",
-              title: 'Zrobić zakupy spożywcze',
-              description: 'Lista zakupów na tydzień',
-              details: 'Kupić: mleko, jajka, chleb, owoce, warzywa, mięso, ryż, makaron, sery, woda mineralna. Sprawdzić daty ważności i wybierać produkty świeże.',
-              estimatedTime: '1 godzina',
-              completed: false
-            },
-            {
-              id: "4",
-              title: 'Przegląd techniczny samochodu',
-              description: 'Wizyta u mechanika',
-              details: 'Umówić przegląd techniczny samochodu. Sprawdzić stan hamulców, poziom płynów, ciśnienie w oponach. Zapytać o konieczne wymiany części eksploatacyjnych.',
-              estimatedTime: '1.5 godziny',
-              completed: false
-            },
-          ];
-
-          setTasks(mockTasks);
-          setIsLoading(false);
-          return;
-        }
-
-        // Fetch tasks from the backend API
         const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
         const response = await fetch(`http://localhost:8080/api/tasks/user/${user.id}?date=${today}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           credentials: 'include',
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch tasks');
+          const errorText = await response.text();
+          console.error('Failed to fetch tasks:', response.status, errorText);
+          throw new Error(`Nie udało się pobrać zadań (status: ${response.status}). Spróbuj ponownie później.`);
         }
 
         const tasksFromApi = await response.json() as TaskDto[];
-
-        // Map the backend DTO to our frontend Task interface
-        const mappedTasks: Task[] = tasksFromApi.map((task) => ({
-          id: task.taskId,
-          title: task.title,
-          description: task.description,
-          details: task.description, // Use description as details
-          estimatedTime: `${task.estimatedTime} min`, // Convert to string format
-          completed: task.isCompleted,
-          date: task.date
+        const mappedTasks: Task[] = tasksFromApi.map((apiTask) => ({
+          id: apiTask.taskId,
+          title: apiTask.title,
+          description: apiTask.description,
+          details: apiTask.description,
+          estimatedTime: `${apiTask.estimatedTime} min`,
+          completed: apiTask.isCompleted,
+          date: apiTask.date,
         }));
 
         setTasks(mappedTasks);
       } catch (err) {
         console.error('Error fetching tasks:', err);
-        setError('Failed to fetch tasks. Please try again later.');
-        // Use empty array if fetch fails
-        setTasks([]);
+        setError(err instanceof Error ? err.message : 'Wystąpił nieoczekiwany błąd podczas pobierania zadań.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchTasks();
+    fetchTasksForUser();
   }, [user]);
 
   const confirmTaskCompletion = (taskId: string) => {
