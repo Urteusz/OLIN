@@ -22,13 +22,8 @@ public class DailyUserSurveyMapper {
         survey.setAnswer4(dto.answer4());
         survey.setAnswer5(dto.answer5());
 
-        // dateFilled is typically set on creation, either by client or server.
-        // If client sends it, use it. Otherwise, set it to now.
-        if (dto.dateFilled() != null) {
-            survey.setDateFilled(dto.dateFilled());
-        } else {
-            survey.setDateFilled(LocalDateTime.now()); // Default to now if not provided
-        }
+        // Convert the ISO string date to LocalDateTime using the DTO's method
+        survey.setDateFilled(dto.getDateFilledAsLocalDateTime());
         return survey;
     }
 
@@ -43,7 +38,7 @@ public class DailyUserSurveyMapper {
                 entity.getAnswer3(),
                 entity.getAnswer4(),
                 entity.getAnswer5(),
-                entity.getDateFilled()
+                entity.getDateFilled() != null ? entity.getDateFilled().toString() : null
         );
     }
 }

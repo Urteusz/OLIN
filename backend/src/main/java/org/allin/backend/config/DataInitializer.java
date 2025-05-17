@@ -69,7 +69,7 @@ public class DataInitializer {
                     LocalDateTime date = now.minusDays(d);
                     // Możesz ustawić godzinę np. na 18:00, aby wszystkie ankiety były z tej samej pory dnia:
                     date = date.withHour(18).withMinute(0).withSecond(0).withNano(0);
-                    createDailySurvey(dailyUserSurveyService, userId, a1, a2, a3, a4, a5, date);
+                    //createDailySurvey(dailyUserSurveyService, userId, a1, a2, a3, a4, a5, date);
                 }
             }
             System.out.println("Realistic mock data initialization completed!");
@@ -113,19 +113,19 @@ public class DataInitializer {
         System.out.println("Created initial survey for user ID: " + userId);
     }
 
-    private void createDailySurvey(DailyUserSurveyService service, UUID userId,
-                                   int answer1, int answer2, int answer3, int answer4, int answer5,
-                                   LocalDateTime surveyDate) {
-        DailyUserSurveyDto surveyDto = new DailyUserSurveyDto(
-                userId,
-                answer1,
-                answer2,
-                answer3,
-                answer4,
-                answer5,
-                surveyDate
-        );
-        service.addDailyUserSurvey(surveyDto);
-        // Opcjonalnie: System.out.println("Created daily survey for user ID: " + userId + " on " + surveyDate);
-    }
+//    private void createDailySurvey(DailyUserSurveyService service, UUID userId,
+//                                   int answer1, int answer2, int answer3, int answer4, int answer5,
+//                                   LocalDateTime surveyDate) {
+//        DailyUserSurveyDto surveyDto = new DailyUserSurveyDto(
+//                userId,
+//                answer1,
+//                answer2,
+//                answer3,
+//                answer4,
+//                answer5,
+//                surveyDate
+//        );
+//        service.addDailyUserSurvey(surveyDto);
+//        // Opcjonalnie: System.out.println("Created daily survey for user ID: " + userId + " on " + surveyDate);
+//    }
 }

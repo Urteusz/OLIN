@@ -68,7 +68,7 @@ public class DailyUserSurveyService {
         existingSurvey.setAnswer3(surveyDto.answer3());
         existingSurvey.setAnswer4(surveyDto.answer4());
         existingSurvey.setAnswer5(surveyDto.answer5());
-        existingSurvey.setDateFilled(surveyDto.dateFilled());
+        existingSurvey.setDateFilled(LocalDateTime.parse(surveyDto.dateFilled()));
 
         return dailySurveyRepository.save(existingSurvey);
     }
