@@ -127,13 +127,25 @@ export default function RootLayoutClient({
                     </div>
                   )}
                 </div>
-                <button 
-                  onClick={toggleDarkMode}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                  aria-label={darkMode ? 'Włącz jasny motyw' : 'Włącz ciemny motyw'}
-                >
-                  {darkMode ? '🌞' : '🌙'}
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={toggleDarkMode}
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                    aria-label={darkMode ? 'Włącz jasny motyw' : 'Włącz ciemny motyw'}
+                  >
+                    {darkMode ? '🌞' : '🌙'}
+                  </button>
+                  <button 
+                    onClick={() => setUser(null)}
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-red-500"
+                    title="Wyloguj się"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V5.414l6.293 6.293a1 1 0 001.414-1.414L5.414 4H15a1 1 0 100-2H3z" clipRule="evenodd" />
+                      <path fillRule="evenodd" d="M7 3a1 1 0 011-1h7a2 2 0 012 2v12a2 2 0 01-2 2H8a1 1 0 110-2h6a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 01-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           ) : isSidebarOpen ? (
