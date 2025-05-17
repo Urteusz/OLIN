@@ -100,20 +100,39 @@ export default function RootLayoutClient({
               </button>
             </div>
           ) : isSidebarOpen ? (
-            <Link 
-              href="/register"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center"
-            >
-              Zarejestruj się
-            </Link>
+            <div className="space-y-2">
+              <Link 
+                href="/login"
+                className="w-full bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 py-2 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center"
+              >
+                Zaloguj się
+              </Link>
+              <Link 
+                href="/register"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center"
+              >
+                Zarejestruj się
+              </Link>
+            </div>
           ) : (
-            <Link 
-              href="/register"
-              className="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center text-sm font-medium transition-colors"
-              title="Zarejestruj się"
-            >
-              +
-            </Link>
+            <div className="flex space-x-2">
+              <Link 
+                href="/login"
+                className="w-8 h-8 border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-md flex items-center justify-center text-sm font-medium transition-colors"
+                title="Zaloguj się"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </Link>
+              <Link 
+                href="/register"
+                className="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center text-sm font-medium transition-colors"
+                title="Zarejestruj się"
+              >
+                +
+              </Link>
+            </div>
           )}
         </div>
       </div>

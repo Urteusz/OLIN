@@ -37,14 +37,9 @@ public class InitialUserSurveyService {
                     User newUser = new User();
                     newUser.setId(surveyDto.userId());
                     newUser.setEmail(surveyDto.userId() + "@example.com"); // Set a dummy email
-                    newUser.setActive(true);
                     return userRepository.save(newUser);
                 });
 
-        // Check if a survey already exists for this user
-        if (surveyRepository.existsByUserId(user.getId())) {
-            throw new RuntimeException("Initial survey already exists for user: " + user.getId());
-        }
 
         InitialUserSurvey survey = new InitialUserSurvey();
         survey.setUser(user);
