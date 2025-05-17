@@ -127,7 +127,8 @@ export default function InitialUserSurvey() {
       // Store the user ID in localStorage for future requests
       localStorage.setItem('userId', userId);
       
-      router.push('/dashboard'); // Redirect to dashboard after successful submission
+      // Redirect to the main dashboard after successful submission
+      router.push('/');
     } catch (err) {
       console.error('Error submitting form:', err);
       setError(err instanceof Error ? err.message : 'An error occurred while submitting the survey');

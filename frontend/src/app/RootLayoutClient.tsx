@@ -10,6 +10,7 @@ const navItems = [
   { name: 'Tasks', href: '/tasks', icon: '👥' },
   { name: 'Ustawienia', href: '/settings', icon: '⚙️' },
   { name: 'Daily questions', href: '/dailyquestions', icon: '❓' },
+  { name: 'Initial Questionnaire', href: '/initial-survey', icon: '📝' },
 ];
 
 // Typy dla danych użytkownika

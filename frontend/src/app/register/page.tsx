@@ -104,15 +104,12 @@ export default function RegisterPage() {
         // Ustawiamy użytkownika w kontekście
         setUser(userData);
 
-        // Przekierowujemy użytkownika
-        router.push('/');
+        // Przekierowujemy użytkownika do ankiety początkowej
+        router.push('/initial-survey');
       } catch (err) {
         setError('Błąd rejestracji. Spróbuj ponownie.');
         console.error('Registration error:', err);
       }
-
-      // Przekierowujemy na stronę główną
-      router.push('/');
     } catch (err) {
       const errorMessage = err instanceof Error
           ? err.message

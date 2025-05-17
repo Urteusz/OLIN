@@ -12,11 +12,11 @@ interface Question {
 export default function DailyQuestionsPage() {
     const { user } = useUser();
     const [questions, setQuestions] = useState<Question[]>([
-        { id: 1, text: 'Poziom zadowolenia', value: 1 },
-        { id: 2, text: 'Stan fizyczny', value: 1 },
-        { id: 3, text: 'Poziom motywacji', value: 1 },
-        { id: 4, text: 'Poziom skupienia', value: 1 },
-        { id: 5, text: 'Chęć odkrywania', value: 1 }
+        { id: 1, text: 'Poziom zadowolenia', value: 3 },
+        { id: 2, text: 'Stan fizyczny', value: 3 },
+        { id: 3, text: 'Poziom motywacji', value: 3 },
+        { id: 4, text: 'Poziom skupienia', value: 3 },
+        { id: 5, text: 'Chęć odkrywania', value: 3 }
     ]);
 
     const handleSliderChange = (id: number, value: number) => {
@@ -36,8 +36,8 @@ export default function DailyQuestionsPage() {
         }
 
         // Validate that all questions have been answered
-        if (questions.some(q => q.value === 0)) {
-            alert('Proszę odpowiedzieć na wszystkie pytania przed wysłaniem.');
+        if (questions.some(q => q.value < 1 || q.value > 5)) {
+            alert('Proszę upewnić się, że wszystkie odpowiedzi są w skali od 1 do 5.');
             return;
         }
 
@@ -158,7 +158,7 @@ export default function DailyQuestionsPage() {
                             <input
                                 type="range"
                                 id={`question-${question.id}`}
-                                min="0"
+                                min="1"
                                 max="5"
                                 step="1"
                                 value={question.value}
