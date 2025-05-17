@@ -98,6 +98,7 @@ public class GroqApiService {
                 .build();
 
         ChatCompletionResponse response = createChatCompletion(List.of(userMessage));
+        log.info("Response after request: {}", response);
 
         if (response != null && !response.getChoices().isEmpty()) {
             return response.getChoices().getFirst().getMessage().getContent();

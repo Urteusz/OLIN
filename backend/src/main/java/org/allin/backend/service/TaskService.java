@@ -118,11 +118,13 @@ public class TaskService {
 
         // Send the message to the Groq API
         String response = groqApiService.sendMessage(prompt);
+        log.info("Response generateTasksUsingGroqApi: {}", response);
 
         // Parse the response and create tasks
         List<Task> tasks = parseResponseAndCreateTasks(user, date, response);
 
         // Save the tasks to the database
+        log.info("Tasks before saveAll: {}", tasks);
         return taskRepository.saveAll(tasks);
     }
 
@@ -167,7 +169,8 @@ public class TaskService {
                     } else {
                         task.setEstimatedTime(15); // Default estimated time in minutes
                     }
-                    
+
+                    log.info("Task {}", task);
                     tasks.add(task);
                 }
             } else {
