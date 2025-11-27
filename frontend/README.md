@@ -1,38 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OLIN — Frontend
 
-## Getting Started
+Krótki opis
+----------
+Frontend aplikacji OLIN zbudowany przy użyciu Next.js, React i TypeScript. Odpowiada za interfejs użytkownika: kwestionariusze nastroju, wyświetlanie rekomendacji AI, ćwiczenia i integrację z backendem.
 
-First, run the development server:
+Technologie
+-----------
+- React
+- Next.js (App Router)
+- TypeScript
+- JavaScript
+- npm / Node.js
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Szybkie uruchomienie (deweloperskie)
+------------------------------------
+1. Przejdź do katalogu frontend:
+    - `cd frontend`
+2. Zainstaluj zależności:
+    - `npm install`
+3. Uruchom serwer deweloperski:
+    - `npm run dev`
+4. Otwórz: `http://localhost:3000`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Pliki kluczowe
+--------------
+- Główny punkt wejścia (Next.js app router): `app/page.tsx`
+- Przykładowy plik zmiennych środowiskowych: `frontend/.env.example`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Budowanie i uruchomienie produkcyjne
+------------------------------------
+- Budowanie: `npm run build`
+- Uruchomienie: `npm run start`
+- Podgląd: `npm run preview`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Połączenie z backendem
+----------------------
+Backend domyślnie działa pod: `http://localhost:8080`  
+Przykładowy plik konfiguracyjny backendu: `backend/src/main/resources/application.example.yml`
 
-## Learn More
+Zmienne środowiskowe
+--------------------
+Skopiuj `frontend/.env.example` do `frontend/.env` i ustaw:
+- `API_BASE_URL` — adres API backendu (np. `http://localhost:8080/api`)
+- `NEXT_PUBLIC_*` — klucze dostępne po stronie klienta
 
-To learn more about Next.js, take a look at the following resources:
+Testy
+-----
+- Uruchamianie testów (jeśli skonfigurowane): `npm test`  
+  Zalecane narzędzia: Jest, React Testing Library.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Bezpieczeństwo i prywatność
+---------------------------
+Frontend nie powinien przechowywać wrażliwych sekretów. Uwierzytelnianie i autoryzacja realizowane przez backend (JWT / OAuth2). Używać HTTPS w środowisku produkcyjnym.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Licencja
+--------
+Projekt na licencji MIT — zobacz plik `LICENSE` w repozytorium głównym.
 
-## Deploy on Vercel
+Kontakt i repozytorium
+----------------------
+Repozytorium: `https://gitlab.com/maksmax4444/hackaton25v2.git`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-This is front end.
+Uwaga
+-----
+OLIN jest narzędziem wspomagającym i nie zastępuje profesjonalnej pomocy psychologicznej.
