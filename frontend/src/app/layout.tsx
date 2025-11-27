@@ -7,7 +7,7 @@ import { UserProvider } from '../context/UserContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Hackaton App',
+  title: 'ALLIN',
   description: 'Aplikacja stworzona na hackaton',
 };
 

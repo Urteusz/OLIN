@@ -58,7 +58,9 @@ public class InitialUserSurveyService {
     }
 
     public Optional<InitialUserSurvey> findSurveyByUserId(UUID userId) {
-        return surveyRepository.findByUserId(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        return surveyRepository.findFirstByUserOrderByUpdatedAtDesc(user);
     }
 
     @Transactional

@@ -86,6 +86,7 @@ public class DailyUserSurveyService {
 
         LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
-        return dailySurveyRepository.findByUserAndDateFilledIsBetween(user, startOfDay, endOfDay);
+        // return dailySurveyRepository.findFirstByUserAndDateFilledIsBetweenOrderByDateFilledDesc(user, startOfDay, endOfDay);
+        return dailySurveyRepository.findFirstByUserAndDateFilledIsBetweenOrderByDateFilledDescIdAsc(user, startOfDay, endOfDay);
     }
 }

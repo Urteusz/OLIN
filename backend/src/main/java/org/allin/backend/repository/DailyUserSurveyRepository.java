@@ -13,5 +13,6 @@ public interface DailyUserSurveyRepository extends JpaRepository<DailyUserSurvey
     Optional<DailyUserSurvey> findByUserId(UUID userId);
     List<DailyUserSurvey> findAllByUserUsername(String username);
 
-    Optional<DailyUserSurvey> findByUserAndDateFilledIsBetween(User user, LocalDateTime dateFilledAfter, LocalDateTime dateFilledBefore);
+    Optional<DailyUserSurvey> findFirstByUserAndDateFilledIsBetweenOrderByDateFilledDescIdAsc(User user, LocalDateTime dateFilledAfter, LocalDateTime dateFilledBefore);
+//    Optional<DailyUserSurvey> findFirstByUserAndDateFilledIsBetweenOrderByDateFilledDesc(User user, LocalDateTime dateFilledAfter, LocalDateTime dateFilledBefore);
 }
